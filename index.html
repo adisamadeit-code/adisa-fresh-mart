@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#14532d">
+<title>ADISA FRESH MART — Segar • Sehat • Praktis</title>
+<style>
+:root{--green:#14532d;--green2:#1f6b3b;--lime:#d9e9a4;--gold:#d6a83d;--cream:#fffaf0;--ink:#183326;--muted:#647067;--white:#fff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+a{color:inherit;text-decoration:none}button,input{font:inherit}.topbar{background:#103d26;color:#fff;text-align:center;padding:8px 12px;font-size:12px;letter-spacing:.2px}
+header{background:#fffdf7;border-bottom:1px solid #eadfca;position:sticky;top:0;z-index:5}.nav{max-width:1180px;margin:auto;padding:12px 18px;display:flex;gap:14px;align-items:center}.brand{display:flex;align-items:center;gap:9px;min-width:180px}.brand img{width:52px;height:52px;object-fit:contain}.brand strong{display:block;color:var(--green);font-family:Georgia,serif;font-size:19px;line-height:1.05}.brand small{font-size:10px;letter-spacing:1.8px;font-weight:800}.search{flex:1;display:flex;background:#f4f2e9;border:1px solid #e4d9c3;border-radius:30px;padding:10px 15px;gap:8px}.search input{width:100%;border:0;outline:0;background:transparent}.navlinks{display:flex;gap:14px;font-size:13px;font-weight:700}.navlinks a:hover{color:var(--green2)}
+.wrap{max-width:1180px;margin:auto;padding:0 18px}.hero{margin:20px auto 14px;border-radius:24px;overflow:hidden;display:grid;grid-template-columns:1.05fr .95fr;background:linear-gradient(125deg,#f4edcf,#e2efce 60%,#fff5d8);min-height:330px;box-shadow:0 8px 28px #254b2410}.hero-copy{padding:36px 32px;align-self:center}.eyebrow{display:inline-block;background:#e1edc9;color:var(--green);border-radius:30px;padding:7px 12px;font-size:12px;font-weight:800}.hero h1{font-family:Georgia,serif;color:var(--green);font-size:clamp(30px,4vw,48px);line-height:1.08;margin:14px 0}.hero p{color:#42584a;line-height:1.6;max-width:480px}.btn{display:inline-block;background:var(--green);color:#fff;border:0;border-radius:28px;padding:12px 20px;font-weight:800;cursor:pointer}.btn:hover{background:#0c3c23}.hero-art{display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 50% 45%,#fffdf0 0,#e6edce 55%,#c5dcae 100%);position:relative}.food-illustration{width:min(100%,400px);height:250px;border-radius:22px;background:#fff8e7;box-shadow:0 15px 35px #244b251e;display:flex;align-items:center;justify-content:center;flex-direction:column;border:1px solid #e2d4a8;transform:rotate(-2deg)}.food-illustration .emoji{font-size:54px;letter-spacing:5px}.food-illustration h3{font-family:Georgia,serif;color:var(--green);font-size:24px;margin:12px 0 4px}.food-illustration p{margin:0;font-size:13px}
+.benefits{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0 28px}.benefit{background:#fff;border:1px solid #eee3cf;border-radius:15px;padding:13px;text-align:center;font-size:13px;font-weight:750}.benefit span{display:block;font-size:23px;margin-bottom:4px}
+section{margin:28px 0}.section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:14px}.section-head h2{margin:0;font-family:Georgia,serif;color:var(--green);font-size:25px}.section-head p{margin:4px 0 0;color:var(--muted);font-size:13px}.categories{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.cat{background:#fff;border:1px solid #eee2cb;border-radius:16px;padding:18px 8px;text-align:center;box-shadow:0 4px 12px #243d1710}.cat .icon{font-size:30px}.cat strong{display:block;margin-top:8px;font-size:13px}.products{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.product{background:#fff;border:1px solid #eee2cb;border-radius:18px;overflow:hidden;box-shadow:0 5px 16px #243d1710}.product-art{height:145px;display:flex;align-items:center;justify-content:center;font-size:58px;background:linear-gradient(135deg,#edf2d8,#fff0d3)}.product-body{padding:13px}.tag{display:inline-block;color:var(--green);background:#e8f0d8;padding:4px 8px;border-radius:20px;font-size:10px;font-weight:800}.product h3{font-size:15px;margin:9px 0 5px}.desc{font-size:12px;color:var(--muted);line-height:1.45;min-height:34px}.price{font-size:17px;font-weight:900;color:var(--green);margin:10px 0}.product .btn{width:100%;padding:10px;font-size:13px}
+.notice{background:#164b2d;color:#fff;border-radius:20px;padding:22px;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center}.notice h2{margin:0 0 7px;font-family:Georgia,serif}.notice p{margin:0;color:#e6f0e6;font-size:14px;line-height:1.55}.notice strong{color:#f8dc86}
+footer{margin-top:38px;background:#103d26;color:#fff;padding:28px 18px}.foot{max-width:1180px;margin:auto;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.foot p{color:#d9e7d9;font-size:13px;margin:7px 0}.foot strong{font-family:Georgia,serif;font-size:20px}
+@media(max-width:760px){.nav{flex-wrap:wrap}.brand{flex:1}.navlinks{width:100%;justify-content:space-around}.search{order:3;flex-basis:100%}.hero{grid-template-columns:1fr}.hero-copy{padding:27px 22px}.hero-art{padding:18px}.food-illustration{height:190px}.benefits{grid-template-columns:repeat(2,1fr)}.categories{grid-template-columns:repeat(2,1fr)}.products{grid-template-columns:repeat(2,1fr)}.product-art{height:120px}.notice{grid-template-columns:1fr}.section-head h2{font-size:22px}}
+@media(max-width:380px){.products{grid-template-columns:1fr 1fr;gap:8px}.product-body{padding:10px}.product h3{font-size:13px}}
+</style>
+</head>
+<body>
+<div class="topbar">🌿 Segar • Sehat • Praktis &nbsp; | &nbsp; Pesanan reguler ditutup pukul <strong>16.00 WITA</strong></div>
+<header><div class="nav">
+<a class="brand" href="#" aria-label="ADISA FRESH MART beranda"><img src="/public/logo-afm.png" alt="Logo AFM"><span><strong>ADISA</strong><small>FRESH MART</small></span></a>
+<form class="search" onsubmit="event.preventDefault();filterProducts()"><span>⌕</span><input id="searchInput" type="search" placeholder="Cari ayam berbumbu, jamu, frozen food..." aria-label="Cari produk"><button style="border:0;background:transparent;color:#14532d;font-weight:800" type="submit">Cari</button></form>
+<nav class="navlinks"><a href="#kategori">Kategori</a><a href="#produk">Produk</a><a href="#info">Info Pesanan</a></nav>
+</div></header>
+<main class="wrap">
+<div class="hero">
+<div class="hero-copy"><span class="eyebrow">BELANJA PRAKTIS UNTUK KELUARGA</span><h1>Bahan Segar,<br>Hidup Lebih Praktis</h1><p>Temukan minuman herbal, lauk mentah berbumbu siap masak, dan pilihan frozen food untuk membantu persiapan menu keluarga.</p><a class="btn" href="#produk">Belanja Sekarang&nbsp; →</a></div>
+<div class="hero-art"><div class="food-illustration"><div class="emoji">🌿 🍗 🥬</div><h3>ADISA FRESH MART</h3><p>Segar • Sehat • Praktis</p><p style="margin-top:12px;color:#7c682c;font-weight:800">Racikan pilihan untuk keluarga</p></div></div>
+</div>
+<div class="benefits"><div class="benefit"><span>🌱</span>Bahan Pilihan</div><div class="benefit"><span>🧼</span>Higienis & Tertata</div><div class="benefit"><span>🍲</span>Praktis Siap Masak</div><div class="benefit"><span>🛵</span>Pengantaran Terjadwal</div></div>
+<section id="kategori"><div class="section-head"><div><h2>Kategori Produk</h2><p>Pilih kebutuhan dapur dan minuman favoritmu.</p></div></div>
+<div class="categories">
+<a class="cat" href="#produk" onclick="setCategory('jamu')"><div class="icon">🧃</div><strong>Jamu & Herbal</strong></a>
+<a class="cat" href="#produk" onclick="setCategory('ayam')"><div class="icon">🍗</div><strong>Lauk Mentah Berbumbu</strong></a>
+<a class="cat" href="#produk" onclick="setCategory('sayur')"><div class="icon">🥬</div><strong>Paket Sayuran</strong></a>
+<a class="cat" href="#produk" onclick="setCategory('frozen')"><div class="icon">❄️</div><strong>Frozen Food</strong></a>
+<a class="cat" href="#produk" onclick="setCategory('dapur')"><div class="icon">🧄</div><strong>Bumbu & Bahan Dapur</strong></a>
+</div></section>
+<section id="produk"><div class="section-head"><div><h2>Pilihan Produk</h2><p>Contoh katalog awal — harga dan ketersediaan perlu dikonfirmasi sebelum toko diluncurkan.</p></div></div>
+<div class="products" id="productGrid">
+<article class="product" data-category="ayam" data-name="ayam bumbu kuning siap masak"><div class="product-art">🍗</div><div class="product-body"><span class="tag">PRE-ORDER</span><h3>Ayam Bumbu Kuning Siap Masak</h3><div class="desc">Ayam mentah berbumbu, siap dimasak di rumah.</div><div class="price">Mulai Rp20.000</div><button class="btn" onclick="orderProduct('Ayam Bumbu Kuning Siap Masak')">Tanya / Pesan</button></div></article>
+<article class="product" data-category="jamu" data-name="jamu kunyit asam"><div class="product-art">🧃</div><div class="product-body"><span class="tag">HERBAL</span><h3>Jamu Kunyit Asam</h3><div class="desc">Minuman herbal dengan rasa segar khas kunyit dan asam.</div><div class="price">Harga dikonfirmasi</div><button class="btn" onclick="orderProduct('Jamu Kunyit Asam')">Tanya / Pesan</button></div></article>
+<article class="product" data-category="jamu" data-name="jamu beras kencur"><div class="product-art">🥤</div><div class="product-body"><span class="tag">HERBAL</span><h3>Jamu Beras Kencur</h3><div class="desc">Minuman tradisional untuk menemani aktivitas harian.</div><div class="price">Harga dikonfirmasi</div><button class="btn" onclick="orderProduct('Jamu Beras Kencur')">Tanya / Pesan</button></div></article>
+<article class="product" data-category="frozen" data-name="frozen food pilihan"><div class="product-art">🥟</div><div class="product-body"><span class="tag">STOK TERBATAS</span><h3>Frozen Food Pilihan</h3><div class="desc">Varian dan stok mengikuti ketersediaan penyimpanan.</div><div class="price">Harga dikonfirmasi</div><button class="btn" onclick="orderProduct('Frozen Food Pilihan')">Tanya / Pesan</button></div></article>
+<article class="product" data-category="sayur" data-name="paket sayur siap masak"><div class="product-art">🥦</div><div class="product-body"><span class="tag">PRE-ORDER</span><h3>Paket Sayur Siap Masak</h3><div class="desc">Rencana menu sayur dengan bahan yang disiapkan sesuai pesanan.</div><div class="price">Segera hadir</div><button class="btn" onclick="orderProduct('Paket Sayur Siap Masak')">Tanya / Pesan</button></div></article>
+<article class="product" data-category="dapur" data-name="bumbu dan bahan dapur"><div class="product-art">🧄</div><div class="product-body"><span class="tag">DAPUR</span><h3>Bumbu & Bahan Dapur</h3><div class="desc">Bahan pendukung masak sesuai katalog yang tersedia.</div><div class="price">Segera hadir</div><button class="btn" onclick="orderProduct('Bumbu & Bahan Dapur')">Tanya / Pesan</button></div></article>
+</div></section>
+<section id="info"><div class="notice"><div><h2>Jadwal Pemesanan</h2><p>Pesanan reguler diterima sampai <strong>pukul 16.00 WITA</strong> untuk dijadwalkan pada hari berikutnya, sesuai stok, kapasitas persiapan, dan konfirmasi admin. Pesanan setelah batas waktu masuk antrean berikutnya.</p></div><a class="btn" href="#produk">Lihat Produk</a></div></section>
+</main>
+<footer><div class="foot"><div><strong>ADISA FRESH MART</strong><p>Segar • Sehat • Praktis</p><p>Minuman herbal dan kebutuhan masak keluarga.</p></div><div><strong>Informasi</strong><p>Pre-order dan ketersediaan dikonfirmasi admin.</p><p>Pengantaran mengikuti jadwal yang disepakati.</p></div></div></footer>
+<script>
+function filterProducts(){const q=document.getElementById('searchInput').value.toLowerCase().trim();document.querySelectorAll('.product').forEach(p=>{p.style.display=p.dataset.name.includes(q)?'':'none';});}
+function setCategory(c){document.querySelectorAll('.product').forEach(p=>{p.style.display=(p.dataset.category===c)?'':'none';});}
+function orderProduct(name){alert('Ini masih contoh tampilan. Hubungkan tombol pemesanan ke nomor WhatsApp ADISA FRESH MART setelah nomor admin ditetapkan. Produk: '+name);}
+</script>
+</body>
+</html>
