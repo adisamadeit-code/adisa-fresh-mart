@@ -14,6 +14,11 @@
             color: #1A3022;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+        /* Efek aktif untuk menu bawah */
+        .nav-item.active {
+            color: #1B3B2B;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body class="pb-24"> <!-- Padding bawah agar konten tidak tertutup navigasi -->
@@ -24,10 +29,9 @@
         <span>SEGAR • SEHAT • PRAKTIS | Pesanan reguler sampai 16.00 WITA</span>
     </div>
 
-    <!-- Header Utama (Logo Asli logo-afm.png, Nama Toko, & Tombol Keranjang) -->
+    <!-- Header Utama -->
     <div class="bg-[#FDFBF7] px-4 py-3 flex items-center justify-between border-b border-gray-100">
         <div class="flex items-center space-x-3">
-            <!-- Menggunakan nama file logo yang benar sesuai repository -->
             <img src="logo-afm.png" alt="Logo ADISA FRESH MART" class="w-12 h-12 object-contain rounded-full">
             <div>
                 <h1 class="font-bold text-base tracking-tight text-[#1A3022]">ADISA FRESH MART</h1>
@@ -36,17 +40,17 @@
         </div>
         
         <!-- Tombol Keranjang -->
-        <a href="#keranjang" class="bg-white border border-gray-300 rounded-full px-4 py-2 flex items-center space-x-2 shadow-2xs hover:bg-gray-50">
+        <button onclick="bukaKeranjang()" class="bg-white border border-gray-300 rounded-full px-4 py-2 flex items-center space-x-2 shadow-2xs hover:bg-gray-50 cursor-pointer">
             <i class="fa-solid fa-cart-shopping text-emerald-900 text-sm"></i>
-            <span class="text-xs font-semibold text-gray-800">Keranjang 0</span>
-        </a>
+            <span class="text-xs font-semibold text-gray-800">Keranjang <span id="cart-counter">0</span></span>
+        </button>
     </div>
 
     <!-- Kotak Pencarian -->
     <div class="bg-[#FDFBF7] px-4 pb-3 pt-1 border-b border-gray-200">
         <div class="flex items-center bg-[#F4F1EA] border border-gray-300 rounded-full p-1 shadow-2xs">
-            <input type="text" placeholder="Cari jamu, ayam berbumbu, frozen food..." class="w-full bg-transparent px-4 text-xs focus:outline-none text-gray-700 placeholder-gray-500">
-            <button class="bg-[#1B3B2B] text-white px-6 py-2.5 rounded-full text-xs font-semibold hover:bg-black transition">
+            <input type="text" id="search-input" placeholder="Cari jamu, ayam berbumbu, frozen food..." class="w-full bg-transparent px-4 text-xs focus:outline-none text-gray-700 placeholder-gray-500">
+            <button onclick="jalankanPencarian()" class="bg-[#1B3B2B] text-white px-6 py-2.5 rounded-full text-xs font-semibold hover:bg-black transition cursor-pointer">
                 Cari
             </button>
         </div>
@@ -59,7 +63,7 @@
             <span class="text-[9px] font-bold text-emerald-900 bg-emerald-200/50 px-2.5 py-1 rounded-full uppercase tracking-wider">Belanja Praktis Untuk Keluarga</span>
             <h2 class="text-xl font-bold mt-2.5 text-[#1A3022] leading-tight">Bahan Segar, Hidup Lebih Praktis</h2>
             <p class="text-xs text-gray-600 mt-2 leading-relaxed">Minuman herbal, lauk mentah berbumbu siap masak, frozen food, dan pilihan kebutuhan dapur keluarga.</p>
-            <button class="mt-4 bg-[#1B3B2B] text-white text-xs font-medium px-5 py-2.5 rounded-full shadow-xs hover:bg-black transition flex items-center space-x-2">
+            <button class="mt-4 bg-[#1B3B2B] text-white text-xs font-medium px-5 py-2.5 rounded-full shadow-xs hover:bg-black transition flex items-center space-x-2 cursor-pointer">
                 <span>Jelajahi Produk</span>
                 <i class="fa-solid fa-arrow-right text-[10px] text-emerald-300"></i>
             </button>
@@ -69,19 +73,19 @@
         <section class="space-y-2">
             <h3 class="font-bold text-xs text-[#1A3022] uppercase tracking-wider px-1">Kategori Pilihan</h3>
             <div class="grid grid-cols-4 gap-2 text-center">
-                <div class="bg-white p-2.5 rounded-xl border border-gray-200 shadow-2xs flex flex-col items-center">
+                <div onclick="pilihKategori('Jamu')" class="bg-white p-2.5 rounded-xl border border-gray-200 shadow-2xs flex flex-col items-center cursor-pointer hover:border-emerald-700">
                     <span class="text-lg mb-1">🍹</span>
                     <span class="text-[9px] font-medium text-gray-700 leading-tight">Jamu & Herbal</span>
                 </div>
-                <div class="bg-white p-2.5 rounded-xl border border-gray-200 shadow-2xs flex flex-col items-center">
+                <div onclick="pilihKategori('Sayur')" class="bg-white p-2.5 rounded-xl border border-gray-200 shadow-2xs flex flex-col items-center cursor-pointer hover:border-emerald-700">
                     <span class="text-lg mb-1">🥬</span>
                     <span class="text-[9px] font-medium text-gray-700 leading-tight">Sayur Segar</span>
                 </div>
-                <div class="bg-white p-2.5 rounded-xl border border-gray-200 shadow-2xs flex flex-col items-center">
+                <div onclick="pilihKategori('Ayam')" class="bg-white p-2.5 rounded-xl border border-gray-200 shadow-2xs flex flex-col items-center cursor-pointer hover:border-emerald-700">
                     <span class="text-lg mb-1">🍗</span>
                     <span class="text-[9px] font-medium text-gray-700 leading-tight">Ayam & Daging</span>
                 </div>
-                <div class="bg-white p-2.5 rounded-xl border border-gray-200 shadow-2xs flex flex-col items-center">
+                <div onclick="pilihKategori('Frozen')" class="bg-white p-2.5 rounded-xl border border-gray-200 shadow-2xs flex flex-col items-center cursor-pointer hover:border-emerald-700">
                     <span class="text-lg mb-1">🧊</span>
                     <span class="text-[9px] font-medium text-gray-700 leading-tight">Frozen Food</span>
                 </div>
@@ -89,29 +93,63 @@
         </section>
     </main>
 
-    <!-- BOTTOM NAVIGATION BAR (5 Tombol Navigasi Bawah) -->
+    <!-- BOTTOM NAVIGATION BAR (Interaktif) -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg py-2 px-4 flex justify-around items-center z-50">
-        <a href="#" class="flex flex-col items-center text-[#1B3B2B]">
+        <button onclick="navigasiKe('beranda')" class="nav-item flex flex-col items-center text-[#1B3B2B] cursor-pointer bg-transparent border-none">
             <i class="fa-solid fa-house text-base"></i>
             <span class="text-[10px] font-semibold mt-1">Beranda</span>
-        </a>
-        <a href="#kategori" class="flex flex-col items-center text-gray-400 hover:text-[#1B3B2B]">
+        </button>
+        <button onclick="navigasiKe('kategori')" class="nav-item flex flex-col items-center text-gray-400 hover:text-[#1B3B2B] cursor-pointer bg-transparent border-none">
             <i class="fa-solid fa-folder-open text-base"></i>
             <span class="text-[10px] font-medium mt-1">Kategori</span>
-        </a>
-        <a href="#cari" class="flex flex-col items-center text-gray-400 hover:text-[#1B3B2B]">
+        </button>
+        <button onclick="navigasiKe('pencarian')" class="nav-item flex flex-col items-center text-gray-400 hover:text-[#1B3B2B] cursor-pointer bg-transparent border-none">
             <i class="fa-solid fa-magnifying-glass text-base"></i>
             <span class="text-[10px] font-medium mt-1">Pencarian</span>
-        </a>
-        <a href="#keranjang" class="flex flex-col items-center text-gray-400 hover:text-[#1B3B2B] relative">
+        </button>
+        <button onclick="navigasiKe('keranjang')" class="nav-item flex flex-col items-center text-gray-400 hover:text-[#1B3B2B] relative cursor-pointer bg-transparent border-none">
             <i class="fa-solid fa-cart-shopping text-base"></i>
             <span class="text-[10px] font-medium mt-1">Keranjang</span>
-        </a>
-        <a href="#akun" class="flex flex-col items-center text-gray-400 hover:text-[#1B3B2B]">
+        </button>
+        <button onclick="navigasiKe('akun')" class="nav-item flex flex-col items-center text-gray-400 hover:text-[#1B3B2B] cursor-pointer bg-transparent border-none">
             <i class="fa-solid fa-user text-base"></i>
             <span class="text-[10px] font-medium mt-1">Akun</span>
-        </a>
+        </button>
     </nav>
+
+    <!-- Script JavaScript agar tombol berfungsi -->
+    <script>
+        function navigasiKe(menu) {
+            if (menu === 'beranda') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (menu === 'kategori') {
+                alert("Mengarahkan ke halaman Kategori Produk...");
+            } else if (menu === 'pencarian') {
+                document.getElementById('search-input').focus();
+            } else if (menu === 'keranjang') {
+                alert("Keranjang belanja masih kosong.");
+            } else if (menu === 'akun') {
+                alert("Fitur Akun / Profil Pelanggan.");
+            }
+        }
+
+        function bukaKeranjang() {
+            alert("Membuka Keranjang Belanja.");
+        }
+
+        function jalankanPencarian() {
+            const keyword = document.getElementById('search-input').value;
+            if(keyword.trim() !== "") {
+                alert("Mencari produk: " + keyword);
+            } else {
+                alert("Silakan ketik nama produk yang ingin dicari.");
+            }
+        }
+
+        function pilihKategori(namaKategori) {
+            alert("Menampilkan produk kategori: " + namaKategori);
+        }
+    </script>
 
 </body>
 </html>
