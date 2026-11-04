@@ -14,7 +14,7 @@ header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid 
 nav{display:flex;gap:17px;overflow:auto;padding:12px 2px 2px;white-space:nowrap}nav a{font-size:12px;color:var(--g);text-decoration:none;font-weight:bold}
 .search{padding:12px 14px 0}.search input{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fbfcf8;outline:none}
 .hero{margin:14px;padding:24px 20px;border-radius:18px;background:linear-gradient(120deg,#164b2e,#39794e);color:#fff;position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:150px;height:150px;border:1px solid #ffffff33;border-radius:50%;right:-35px;top:-35px}.hero h1{font-size:25px;line-height:1.2;margin:0 0 9px;max-width:330px}.hero p{font-size:13px;line-height:1.5;margin:0;max-width:320px;color:#f4f7ee}.hero strong{display:inline-block;margin-top:15px;color:#ffe5a2;font-size:12px}
-.benefits{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;padding:0 14px}.benefit{background:#f7f8f2;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:12px}.benefit b{display:block;color:var(--g);margin-bottom:4px}
+.benefits{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:0 14px}.benefit{background:#f7f8f2;border:1px solid var(--line);border-radius:12px;padding:12px 5px;text-align:center;font-size:25px;line-height:1.2}
 section{padding:20px 14px 4px}.section-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.section-title h2{font-size:18px;color:var(--g);margin:0}.section-title small{font-size:11px;color:var(--muted)}
 .categories{display:flex;gap:8px;overflow:auto;padding-bottom:5px}.cat{white-space:nowrap;border:1px solid #dce6dc;background:#fff;border-radius:30px;padding:9px 13px;font-size:12px;color:var(--g)}.cat.active{background:var(--g);color:#fff;border-color:var(--g)}
 .products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.card{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}.pic{height:125px;background:#f1f4ed;display:flex;align-items:center;justify-content:center;color:#98a397;font-size:12px;overflow:hidden}.pic img{width:100%;height:100%;object-fit:cover}.card-body{padding:10px}.card h3{font-size:13px;line-height:1.35;margin:0 0 6px;color:#263c2c;min-height:35px}.desc{font-size:11px;color:var(--muted);line-height:1.4;min-height:30px}.price{font-weight:bold;color:var(--g);font-size:14px;margin:8px 0}.tag{display:inline-block;font-size:10px;background:#f8efd9;color:#785b20;border-radius:20px;padding:4px 7px;margin-bottom:8px}.card button{width:100%;border:0;background:var(--g);color:#fff;border-radius:9px;padding:9px;font-size:12px;font-weight:bold}
@@ -36,18 +36,17 @@ section{padding:20px 14px 4px}.section-title{display:flex;align-items:center;jus
 <header>
   <div class="top">
     <img class="logo" src="logo-afm.png" alt="Logo ADISA FRESH MART" onerror="this.style.display='none'">
-    <div class="brand"><b>ADISA FRESH MART</b><small>Bahan Segar, Hidup Lebih Praktis</small></div>
+    <div class="brand"><b>ADISA FRESH MART</b></div>
     <div class="head-actions"><button class="admin-open" onclick="openAdmin()">ADMIN</button><button class="cart-open" onclick="openCart()">🛒 <span id="cartCount">0</span></button></div>
   </div>
-  <nav><a href="#beranda">Beranda</a><a href="#kategori">Kategori</a><a href="#produk">Produk</a><a href="#info">Info</a></nav>
 </header>
 <div class="search"><input id="searchBox" placeholder="Cari jamu, sayur, frozen food..." oninput="renderProducts()"></div>
-<div id="beranda" class="hero"><h1>Bahan Segar,<br>Hidup Lebih Praktis</h1><p>Belanja kebutuhan harian dan pilihan kuliner keluarga dengan mudah. Pilih produk, pesan, lalu atur pengantaran.</p><strong>ADISA FRESH MART • Praktis untuk keluarga</strong></div>
-<div class="benefits">
- <div class="benefit"><b>🌿 Bahan Pilihan</b>Produk dipilih dengan cermat.</div>
- <div class="benefit"><b>🧼 Bersih & Tertata</b>Dipersiapkan dengan rapi.</div>
- <div class="benefit"><b>🍲 Praktis Siap Masak</b>Membantu kebutuhan dapur.</div>
- <div class="benefit"><b>🛵 Pengantaran Terjadwal</b>Pesanan diatur sesuai jadwal.</div>
+<div id="beranda" class="hero"><h1>Bahan Segar,<br>Hidup Lebih Praktis</h1></div>
+<div class="benefits icon-benefits" aria-label="Layanan ADISA FRESH MART">
+ <div class="benefit" title="Bahan pilihan">🌿</div>
+ <div class="benefit" title="Bersih dan tertata">🧼</div>
+ <div class="benefit" title="Praktis siap masak">🍲</div>
+ <div class="benefit" title="Pengantaran">🛵</div>
 </div>
 <section id="kategori"><div class="section-title"><h2>Kategori</h2><small>Pilih sesuai kebutuhan</small></div>
  <div class="categories" id="categoryList">
