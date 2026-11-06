@@ -8,32 +8,32 @@
 <title>ADISA FRESH MART | Toko Online</title>
 <style>
 :root{
-  --green:#164b35;--green2:#236b43;--green3:#e8f1e7;--cream:#fffdf4;
-  --gold:#c6a45b;--ink:#24352c;--muted:#718078;--line:#e7e5da;
-  --shadow:0 5px 18px rgba(24,67,43,.10);--radius:18px
+  --green:#123f2b;--green2:#21643b;--green3:#dce9cf;--cream:#fff7e5;
+  --gold:#c6a45b;--ink:#203329;--muted:#647469;--line:#d9dfce;
+  --shadow:0 5px 18px rgba(18,63,43,.15);--radius:18px
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:#f7f7ef;color:var(--ink);font:14px/1.45 Arial,Helvetica,sans-serif}
+body{margin:0;background:#e8eddf;color:var(--ink);font:14px/1.45 Arial,Helvetica,sans-serif}
 button,input,select,textarea{font:inherit}
 button{cursor:pointer}
 a{color:inherit;text-decoration:none}
 .site{max-width:1180px;margin:auto;min-height:100vh;background:#fffef8;box-shadow:0 0 30px #183b2510;position:relative;padding-bottom:82px}
-.top-art{height:13px;background:linear-gradient(135deg,#123e2b,#1e7044 55%,#d4bd78);border-radius:0 0 50% 20%}
-header{position:relative;padding:13px 16px 11px;background:linear-gradient(180deg,#fffef8,#f8f8ed);border-bottom:1px solid #e9eadc}
+.top-art{height:16px;background:linear-gradient(110deg,#0d3524,#1d6a3c 48%,#c6a45b 78%,#17472f);border-radius:0 0 50% 20%}
+header{position:relative;padding:13px 16px 11px;background:linear-gradient(115deg,#123f2b,#1b5935 72%,#16472f);border-bottom:3px solid var(--gold)}
 .headrow{display:flex;align-items:center;gap:10px}
-.logo{width:54px;height:54px;flex:0 0 54px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#fff8d9,#d8e8bd 60%,#6b9b53);border:2px solid #d1b86b;color:var(--green);font: bold 29px Georgia;box-shadow:0 2px 7px #00000014}
+.logo{width:56px;height:56px;flex:0 0 56px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 25%,#397b4a,#123f2b 68%);border:2px solid #d8b95e;color:#fff5d8;font: bold 31px Georgia;box-shadow:0 2px 9px #061e1280, inset 0 0 0 3px #ffffff20}
 .brand{min-width:0;flex:1}
-.brand h1{margin:0;color:var(--green);font: bold clamp(18px,4vw,27px) Georgia,serif;letter-spacing:-.4px;line-height:1.08}
-.brand p{margin:4px 0 0;color:#987d37;font-size:10px;font-weight:bold}
-.headbtn{border:0;background:transparent;color:var(--green);font-size:24px;padding:7px;position:relative}
+.brand h1{margin:0;color:#fff8e8;font: bold clamp(18px,4vw,27px) Georgia,serif;letter-spacing:-.4px;line-height:1.08}
+.brand p{margin:4px 0 0;color:#f0d58d;font-size:10px;font-weight:bold}
+.headbtn{border:0;background:transparent;color:#fff5dc;font-size:24px;padding:7px;position:relative}
 .badge{position:absolute;top:0;right:0;min-width:17px;height:17px;padding:0 4px;border-radius:20px;background:#c93030;color:white;font-size:10px;display:grid;place-items:center}
 .searchrow{display:flex;gap:8px;margin-top:12px}
-.searchbox{height:42px;border:1px solid #dfe5d5;background:white;border-radius:25px;display:flex;align-items:center;gap:8px;padding:0 13px;flex:1;box-shadow:0 2px 5px #00000008}
+.searchbox{height:42px;border:2px solid #d2b86e;background:#fffdf7;border-radius:25px;display:flex;align-items:center;gap:8px;padding:0 13px;flex:1;box-shadow:0 2px 7px #071f1428}
 .searchbox span{font-size:19px}
 .searchbox input{border:0;outline:0;width:100%;background:transparent;color:var(--ink)}
 .filterbtn{width:42px;height:42px;border:0;border-radius:50%;background:var(--green);color:white;font-size:19px}
-.hero{margin:0;padding:12px 14px 16px;background:linear-gradient(145deg,#f4f6df,#fffdf4 55%,#e5efd9);border-bottom:4px solid #d6c17d;position:relative;overflow:hidden}
+.hero{margin:0;padding:13px 14px 16px;background:linear-gradient(145deg,#e2edcf,#fff7e5 52%,#d3e4c4);border-bottom:4px solid #c6a45b;position:relative;overflow:hidden}
 .hero:before,.hero:after{content:"";position:absolute;width:130px;height:34px;border-radius:100%;background:#b9d6a1;opacity:.25;transform:rotate(-24deg)}
 .hero:before{top:-15px;left:-35px}.hero:after{bottom:-18px;right:-30px}
 .hero-title{position:relative;z-index:1;text-align:center;color:var(--green);font: bold 17px Georgia;margin:0 0 3px}
@@ -43,7 +43,7 @@ header{position:relative;padding:13px 16px 11px;background:linear-gradient(180de
 .categories{display:flex;gap:9px;overflow-x:auto;scrollbar-width:none;flex:1;padding:2px 1px}
 .categories::-webkit-scrollbar{display:none}
 .cat{border:0;background:transparent;min-width:67px;width:67px;padding:0 2px;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:bold}
-.catpic{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#fff,#e5efd9);border:2px solid white;box-shadow:0 2px 7px #355c2a25;font-size:27px}
+.catpic{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#fff9e9,#cfe1bd);border:2px solid #fffdf5;box-shadow:0 2px 8px #173f2b40;font-size:27px}
 .cat.active .catpic{outline:2px solid var(--gold)}
 .cat.active{color:var(--green)}
 .content{padding:14px}
@@ -52,7 +52,7 @@ header{position:relative;padding:13px 16px 11px;background:linear-gradient(180de
 .section-head p{margin:2px 0 0;color:var(--muted);font-size:11px}
 .result-count{font-size:11px;color:var(--muted)}
 .products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.card{border:1px solid #e6e6d9;border-radius:16px;background:white;overflow:hidden;box-shadow:var(--shadow);min-width:0;position:relative}
+.card{border:1px solid #d8c99e;border-radius:16px;background:#fffdf7;overflow:hidden;box-shadow:var(--shadow);min-width:0;position:relative}
 .photo{height:clamp(125px,35vw,205px);background:linear-gradient(135deg,#edf3df,#d9e8d0);position:relative;overflow:hidden;display:grid;place-items:center}
 .photo img{width:100%;height:100%;object-fit:cover;display:block}
 .photo-fallback{font-size:55px;opacity:.75}
@@ -66,7 +66,7 @@ header{position:relative;padding:13px 16px 11px;background:linear-gradient(180de
 .empty,.loading,.errorbox{grid-column:1/-1;text-align:center;padding:30px 14px;border:1px dashed #cbd8c6;border-radius:15px;color:var(--muted);background:#fbfcf6}
 .empty strong{display:block;color:var(--green);font: bold 18px Georgia;margin-bottom:5px}
 .info-strip{margin:15px 0 3px;padding:12px;border-radius:13px;background:#f2f6e9;color:#4d654f;font-size:11px;text-align:center}
-.bottomnav{position:fixed;z-index:20;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,1180px);padding:7px 7px calc(7px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(5,1fr);background:#fffef5;border-top:1px solid #e5e6d8;box-shadow:0 -5px 18px #173b2512;border-radius:22px 22px 0 0}
+.bottomnav{position:fixed;z-index:20;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,1180px);padding:7px 7px calc(7px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(5,1fr);background:#fff8e8;border-top:2px solid #c6a45b;box-shadow:0 -5px 18px #173b2528;border-radius:22px 22px 0 0}
 .tab{border:0;background:transparent;color:#4c514b;display:flex;flex-direction:column;align-items:center;gap:2px;padding:3px 0;font-size:10px;position:relative}
 .tab .ico{font-size:20px;line-height:1.2}
 .tab.active{color:var(--green);font-weight:bold}
@@ -152,7 +152,7 @@ header{position:relative;padding:13px 16px 11px;background:linear-gradient(180de
 <nav class="bottomnav" aria-label="Navigasi utama">
   <button class="tab active" data-tab="home"><span class="ico">⌂</span><span>Beranda</span></button>
   <button class="tab" data-tab="categories"><span class="ico">▦</span><span>Kategori</span></button>
-  <button class="tab" data-tab="cart"><span class="ico">🛒<span class="badge" id="cartBadgeBottom">0</span></span><span>Keranjang</span></button>
+  <button class="tab" data-tab="live"><span class="ico">🎥</span><span>Video / Live</span></button>
   <button class="tab" data-tab="admin"><span class="ico">◈</span><span>Admin</span></button>
   <button class="tab" data-tab="account"><span class="ico">♟</span><span>Akun</span></button>
 </nav>
@@ -180,7 +180,17 @@ header{position:relative;padding:13px 16px 11px;background:linear-gradient(180de
     <div class="accountbox"><strong style="color:var(--green)">Selamat datang di ADISA FRESH MART 🌿</strong><p class="note">Belanja kebutuhan segar keluarga dengan mudah. Untuk saat ini, pemesanan dilakukan melalui WhatsApp dan dikonfirmasi langsung oleh admin.</p></div>
     <p><strong>Jam pemesanan reguler</strong><br><span class="note">Pesanan reguler diterima sampai pukul 16.00 WITA. Ketersediaan dan jadwal akhir dikonfirmasi admin.</span></p>
     <p><strong>Bantuan pesanan</strong><br><span class="note">Hubungi admin melalui tombol WhatsApp saat mengirim pesanan.</span></p>
-    <a class="secondary" href="admin.html" style="display:block;text-align:center;margin-top:14px">Masuk halaman Admin</a>
+  </section>
+</div>
+
+<div class="overlay" id="liveOverlay" role="dialog" aria-modal="true" aria-label="Video dan Live ADISA FRESH MART">
+  <section class="sheet">
+    <div class="sheethead"><h2>🎥 Video / Live</h2><button class="close" data-close="liveOverlay">×</button></div>
+    <div class="accountbox">
+      <strong style="color:var(--green)">Video & Live ADISA FRESH MART</strong>
+      <p class="note">Lihat informasi produk, promo, cara penyajian, dan siaran langsung ADISA FRESH MART.</p>
+      <p class="note">Tautan akun TikTok toko belum dipasang. Setelah tautan akun diberikan, tombol ini dapat diarahkan langsung ke TikTok toko.</p>
+    </div>
   </section>
 </div>
 
@@ -264,9 +274,8 @@ function addToCart(id){
 }
 function updateCart(){
   const count = cart.reduce((n,x)=>n+x.qty,0);
-  $('cartBadge').textContent = count; $('cartBadgeBottom').textContent = count;
+  $('cartBadge').textContent = count;
   $('cartBadge').style.display = count ? 'grid':'none';
-  $('cartBadgeBottom').style.display = count ? 'grid':'none';
   $('cartTotal').textContent = rupiah(cart.reduce((n,x)=>n+x.price*x.qty,0));
   if(!cart.length){
     $('cartItems').innerHTML = '<div class="empty"><strong>Keranjang masih kosong</strong>Yuk pilih produk segar untuk keluarga.</div>';
@@ -336,9 +345,9 @@ document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{
 document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{
   const tab=b.dataset.tab;
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));
-  if(tab==='home'){closeOverlay('accountOverlay');closeOverlay('cartOverlay');closeOverlay('filterOverlay');window.scrollTo({top:0,behavior:'smooth'});}
+  if(tab==='home'){closeOverlay('accountOverlay');closeOverlay('cartOverlay');closeOverlay('filterOverlay');closeOverlay('liveOverlay');window.scrollTo({top:0,behavior:'smooth'});}
   if(tab==='categories'){makeFilterChoices();openOverlay('filterOverlay');}
-  if(tab==='cart')showCart();
+  if(tab==='live')openOverlay('liveOverlay');
   if(tab==='admin')window.location.href=ADMIN_PAGE;
   if(tab==='account')openOverlay('accountOverlay');
 }));
