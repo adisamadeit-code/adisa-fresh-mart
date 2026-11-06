@@ -1,268 +1,349 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ADISA FRESH MART</title>
-<meta name="description" content="ADISA FRESH MART — Bahan Segar, Hidup Lebih Praktis.">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#164b35">
+<meta name="description" content="ADISA FRESH MART — Segar Pilihannya, Bahagia Keluarganya.">
+<title>ADISA FRESH MART | Toko Online</title>
 <style>
-:root{--g:#164b2e;--g2:#286b43;--c:#fffaf0;--gold:#d5ad55;--ink:#243329;--muted:#718076;--line:#e7eadf;--white:#fff}
-*{box-sizing:border-box}body{margin:0;background:var(--c);color:var(--ink);font-family:Arial,Helvetica,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}.wrap{max-width:600px;margin:auto;min-height:100vh;background:#fff}
-header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);padding:10px 14px;box-shadow:0 2px 10px #163c2510}
-.top{display:flex;align-items:center;gap:10px}.logo{width:48px;height:48px;object-fit:contain;border-radius:12px}.brand{flex:1}.brand b{display:block;color:var(--g);font-size:18px;letter-spacing:.5px}.brand small{color:var(--muted);font-size:11px}.head-actions{display:flex;gap:6px}.head-actions button{border:0;border-radius:10px;padding:9px 10px;font-size:12px;font-weight:bold}.admin-open{background:#f4e8c9;color:#674b12}.cart-open{background:var(--g);color:#fff}
-nav{display:flex;gap:17px;overflow:auto;padding:12px 2px 2px;white-space:nowrap}nav a{font-size:12px;color:var(--g);text-decoration:none;font-weight:bold}
-.search{padding:12px 14px 0}.search input{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fbfcf8;outline:none}
-.hero{margin:14px;padding:24px 20px;border-radius:18px;background:linear-gradient(120deg,#164b2e,#39794e);color:#fff;position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:150px;height:150px;border:1px solid #ffffff33;border-radius:50%;right:-35px;top:-35px}.hero h1{font-size:25px;line-height:1.2;margin:0 0 9px;max-width:330px}.hero p{font-size:13px;line-height:1.5;margin:0;max-width:320px;color:#f4f7ee}.hero strong{display:inline-block;margin-top:15px;color:#ffe5a2;font-size:12px}
-.benefits{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:0 14px}.benefit{background:#f7f8f2;border:1px solid var(--line);border-radius:12px;padding:12px 5px;text-align:center;font-size:25px;line-height:1.2}
-section{padding:20px 14px 4px}.section-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.section-title h2{font-size:18px;color:var(--g);margin:0}.section-title small{font-size:11px;color:var(--muted)}
-.categories{display:flex;gap:8px;overflow:auto;padding-bottom:5px}.cat{white-space:nowrap;border:1px solid #dce6dc;background:#fff;border-radius:30px;padding:9px 13px;font-size:12px;color:var(--g)}.cat.active{background:var(--g);color:#fff;border-color:var(--g)}
-.products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.card{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}.pic{height:125px;background:#f1f4ed;display:flex;align-items:center;justify-content:center;color:#98a397;font-size:12px;overflow:hidden}.pic img{width:100%;height:100%;object-fit:cover}.card-body{padding:10px}.card h3{font-size:13px;line-height:1.35;margin:0 0 6px;color:#263c2c;min-height:35px}.desc{font-size:11px;color:var(--muted);line-height:1.4;min-height:30px}.price{font-weight:bold;color:var(--g);font-size:14px;margin:8px 0}.tag{display:inline-block;font-size:10px;background:#f8efd9;color:#785b20;border-radius:20px;padding:4px 7px;margin-bottom:8px}.card button{width:100%;border:0;background:var(--g);color:#fff;border-radius:9px;padding:9px;font-size:12px;font-weight:bold}
-.info-box{background:#f7f8f2;border:1px solid var(--line);border-radius:14px;padding:14px;font-size:12px;line-height:1.6}.info-box b{color:var(--g)}footer{text-align:center;padding:25px 15px;color:var(--muted);font-size:11px}
-.modal{display:none;position:fixed;inset:0;z-index:30;background:#0008;align-items:flex-end;justify-content:center}.modal.show{display:flex}.modal-box{background:#fff;width:100%;max-width:600px;border-radius:18px 18px 0 0;padding:18px;max-height:90vh;overflow:auto}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.modal-head h3{margin:0;color:var(--g)}.x{border:0;background:#f0f2ed;border-radius:50%;width:32px;height:32px}.field{margin:10px 0}.field label{display:block;font-size:12px;font-weight:bold;margin-bottom:5px}.field input,.field textarea,.field select{width:100%;border:1px solid #dce3da;border-radius:9px;padding:11px;background:#fff}.primary{border:0;background:var(--g);color:#fff;border-radius:10px;padding:12px 15px;font-weight:bold;width:100%}.muted{color:var(--muted);font-size:12px}.cart-row{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding:9px 0;font-size:13px}
-#adminArea{display:none;min-height:100vh;background:#f5f7f2;color:#26352b}#adminArea.active{display:block}#storeArea.hidden{display:none}
-.admin-shell{max-width:900px;margin:auto;padding:14px}.admin-top{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;padding:13px;border-radius:14px;border:1px solid var(--line);margin-bottom:13px}.admin-top b{color:var(--g)}.admin-top button,.admin-btn{border:0;border-radius:9px;padding:9px 12px;background:#eaf1e9;color:var(--g);font-weight:bold;font-size:12px}
-.admin-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px;margin-bottom:13px}.admin-card h2,.admin-card h3{color:var(--g);margin:0 0 12px}.admin-tabs{display:flex;gap:7px;overflow:auto;margin-bottom:12px}.admin-tabs button{white-space:nowrap;border:1px solid #dce5da;background:#fff;color:var(--g);padding:9px 12px;border-radius:9px;font-size:12px}.admin-tabs button.active{background:var(--g);color:#fff}
-.admin-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.admin-field{margin-bottom:10px}.admin-field.full{grid-column:1/-1}.admin-field label{display:block;font-size:12px;font-weight:bold;margin-bottom:5px}.admin-field input,.admin-field textarea,.admin-field select{width:100%;padding:10px;border:1px solid #dce3da;border-radius:8px;background:#fff}.admin-field textarea{min-height:70px}.admin-actions{display:flex;gap:8px}.admin-actions button{flex:1}.admin-primary{background:var(--g);color:#fff;border:0;border-radius:9px;padding:11px;font-weight:bold}.admin-secondary{background:#edf1e9;color:var(--g);border:0;border-radius:9px;padding:11px;font-weight:bold}
-.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:12px;min-width:520px}th,td{padding:9px;border-bottom:1px solid var(--line);text-align:left}th{background:#f4f7f1;color:var(--g)}td button{border:0;border-radius:7px;padding:6px 8px;margin:2px;font-size:11px}.edit-btn{background:#e7f0e5;color:var(--g)}.delete-btn{background:#fae9e7;color:#9a3028}
-.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.stat{background:#f5f8f2;border-radius:11px;padding:13px}.stat b{display:block;font-size:22px;color:var(--g)}.stat span{font-size:11px;color:var(--muted)}
-.notice{padding:10px;border-radius:9px;background:#fff7e5;color:#73591d;font-size:12px;line-height:1.5;margin:10px 0}.status-msg{font-size:12px;margin:8px 0;color:var(--g);min-height:16px}
-@media(min-width:620px){.modal{align-items:center}.modal-box{border-radius:18px}.hero{margin-top:18px}.pic{height:155px}}
+:root{
+  --green:#164b35;--green2:#236b43;--green3:#e8f1e7;--cream:#fffdf4;
+  --gold:#c6a45b;--ink:#24352c;--muted:#718078;--line:#e7e5da;
+  --shadow:0 5px 18px rgba(24,67,43,.10);--radius:18px
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#f7f7ef;color:var(--ink);font:14px/1.45 Arial,Helvetica,sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+.site{max-width:1180px;margin:auto;min-height:100vh;background:#fffef8;box-shadow:0 0 30px #183b2510;position:relative;padding-bottom:82px}
+.top-art{height:13px;background:linear-gradient(135deg,#123e2b,#1e7044 55%,#d4bd78);border-radius:0 0 50% 20%}
+header{position:relative;padding:13px 16px 11px;background:linear-gradient(180deg,#fffef8,#f8f8ed);border-bottom:1px solid #e9eadc}
+.headrow{display:flex;align-items:center;gap:10px}
+.logo{width:54px;height:54px;flex:0 0 54px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#fff8d9,#d8e8bd 60%,#6b9b53);border:2px solid #d1b86b;color:var(--green);font: bold 29px Georgia;box-shadow:0 2px 7px #00000014}
+.brand{min-width:0;flex:1}
+.brand h1{margin:0;color:var(--green);font: bold clamp(18px,4vw,27px) Georgia,serif;letter-spacing:-.4px;line-height:1.08}
+.brand p{margin:4px 0 0;color:#987d37;font-size:10px;font-weight:bold}
+.headbtn{border:0;background:transparent;color:var(--green);font-size:24px;padding:7px;position:relative}
+.badge{position:absolute;top:0;right:0;min-width:17px;height:17px;padding:0 4px;border-radius:20px;background:#c93030;color:white;font-size:10px;display:grid;place-items:center}
+.searchrow{display:flex;gap:8px;margin-top:12px}
+.searchbox{height:42px;border:1px solid #dfe5d5;background:white;border-radius:25px;display:flex;align-items:center;gap:8px;padding:0 13px;flex:1;box-shadow:0 2px 5px #00000008}
+.searchbox span{font-size:19px}
+.searchbox input{border:0;outline:0;width:100%;background:transparent;color:var(--ink)}
+.filterbtn{width:42px;height:42px;border:0;border-radius:50%;background:var(--green);color:white;font-size:19px}
+.hero{margin:0;padding:12px 14px 16px;background:linear-gradient(145deg,#f4f6df,#fffdf4 55%,#e5efd9);border-bottom:4px solid #d6c17d;position:relative;overflow:hidden}
+.hero:before,.hero:after{content:"";position:absolute;width:130px;height:34px;border-radius:100%;background:#b9d6a1;opacity:.25;transform:rotate(-24deg)}
+.hero:before{top:-15px;left:-35px}.hero:after{bottom:-18px;right:-30px}
+.hero-title{position:relative;z-index:1;text-align:center;color:var(--green);font: bold 17px Georgia;margin:0 0 3px}
+.hero-sub{text-align:center;color:#71805d;font-size:11px;margin:0 0 10px}
+.category-wrap{display:flex;align-items:center;gap:5px;position:relative;z-index:1}
+.cat-arrow{border:1px solid #e0e5d5;background:#fff;border-radius:50%;width:28px;height:28px;flex:0 0 28px;color:var(--green);font-size:19px}
+.categories{display:flex;gap:9px;overflow-x:auto;scrollbar-width:none;flex:1;padding:2px 1px}
+.categories::-webkit-scrollbar{display:none}
+.cat{border:0;background:transparent;min-width:67px;width:67px;padding:0 2px;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:bold}
+.catpic{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#fff,#e5efd9);border:2px solid white;box-shadow:0 2px 7px #355c2a25;font-size:27px}
+.cat.active .catpic{outline:2px solid var(--gold)}
+.cat.active{color:var(--green)}
+.content{padding:14px}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:2px 2px 12px}
+.section-head h2{font: bold 20px Georgia;color:var(--green);margin:0}
+.section-head p{margin:2px 0 0;color:var(--muted);font-size:11px}
+.result-count{font-size:11px;color:var(--muted)}
+.products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.card{border:1px solid #e6e6d9;border-radius:16px;background:white;overflow:hidden;box-shadow:var(--shadow);min-width:0;position:relative}
+.photo{height:clamp(125px,35vw,205px);background:linear-gradient(135deg,#edf3df,#d9e8d0);position:relative;overflow:hidden;display:grid;place-items:center}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-fallback{font-size:55px;opacity:.75}
+.tag{position:absolute;top:8px;left:8px;border-radius:20px;padding:4px 9px;background:var(--green2);color:white;font-size:10px;font-weight:bold;box-shadow:0 2px 5px #0002}
+.cardbody{padding:9px 9px 10px}
+.pname{font-weight:bold;color:#26372f;font-size:13px;line-height:1.25;min-height:32px;margin:0 0 5px}
+.price{font-weight:bold;color:var(--green);font-size:16px;margin:0 0 8px}
+.unit{font-size:10px;color:var(--muted);font-weight:normal}
+.addbtn{width:100%;border:0;border-radius:22px;background:linear-gradient(180deg,#267749,#145333);color:white;padding:9px 8px;font-weight:bold;box-shadow:0 3px 7px #164b3526}
+.addbtn:active{transform:scale(.98)}
+.empty,.loading,.errorbox{grid-column:1/-1;text-align:center;padding:30px 14px;border:1px dashed #cbd8c6;border-radius:15px;color:var(--muted);background:#fbfcf6}
+.empty strong{display:block;color:var(--green);font: bold 18px Georgia;margin-bottom:5px}
+.info-strip{margin:15px 0 3px;padding:12px;border-radius:13px;background:#f2f6e9;color:#4d654f;font-size:11px;text-align:center}
+.bottomnav{position:fixed;z-index:20;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,1180px);padding:7px 7px calc(7px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(5,1fr);background:#fffef5;border-top:1px solid #e5e6d8;box-shadow:0 -5px 18px #173b2512;border-radius:22px 22px 0 0}
+.tab{border:0;background:transparent;color:#4c514b;display:flex;flex-direction:column;align-items:center;gap:2px;padding:3px 0;font-size:10px;position:relative}
+.tab .ico{font-size:20px;line-height:1.2}
+.tab.active{color:var(--green);font-weight:bold}
+.tab.active:before{content:"";position:absolute;inset:-2px 7px -1px;background:#edf2d9;border-radius:20px;z-index:-1}
+.tab .badge{top:-3px;right:calc(50% - 21px)}
+.overlay{position:fixed;inset:0;background:#10271dcc;z-index:40;display:none;align-items:flex-end;justify-content:center}
+.overlay.show{display:flex}
+.sheet{background:#fffef8;width:min(100%,620px);max-height:88vh;overflow:auto;border-radius:22px 22px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));box-shadow:0 -10px 35px #0003}
+.sheethead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.sheethead h2{font: bold 21px Georgia;color:var(--green);margin:0}
+.close{border:0;background:#edf2e8;color:var(--green);width:34px;height:34px;border-radius:50%;font-size:20px}
+.cartline{display:grid;grid-template-columns:1fr auto;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
+.cartline strong{display:block;font-size:13px}.cartline small{color:var(--muted)}
+.qty{display:flex;align-items:center;gap:8px}
+.qty button{border:0;border-radius:50%;width:27px;height:27px;background:#eaf1e6;color:var(--green);font-weight:bold}
+.total{display:flex;justify-content:space-between;font-size:17px;font-weight:bold;color:var(--green);padding:14px 0}
+.field{margin:10px 0}
+.field label{display:block;font-size:12px;font-weight:bold;margin-bottom:5px;color:#425449}
+.field input,.field textarea,.field select{width:100%;padding:11px;border:1px solid #d9dfd4;border-radius:10px;background:white;color:var(--ink);outline-color:#8eae83}
+.field textarea{min-height:68px;resize:vertical}
+.primary{width:100%;border:0;border-radius:25px;background:var(--green);color:white;padding:12px;font-weight:bold}
+.secondary{border:1px solid #d9e2d5;background:#f1f5ec;color:var(--green);padding:10px 14px;border-radius:22px;font-weight:bold}
+.note{font-size:11px;color:var(--muted);line-height:1.5}
+.accountbox{padding:15px;border-radius:15px;background:#f1f5e9;margin:10px 0}
+.toast{position:fixed;z-index:60;bottom:90px;left:50%;transform:translateX(-50%);background:#173f2b;color:white;padding:10px 16px;border-radius:24px;box-shadow:var(--shadow);font-size:12px;display:none;max-width:90%;text-align:center}
+.toast.show{display:block}
+@media(min-width:700px){.content{padding:22px}.products{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.photo{height:210px}.hero{padding:18px}.cat{min-width:82px;width:82px}.catpic{width:62px;height:62px}}
+@media(min-width:980px){.products{grid-template-columns:repeat(4,minmax(0,1fr))}.site{margin:20px auto;border-radius:22px;overflow:hidden}.bottomnav{bottom:18px;border-radius:22px;width:min(calc(100% - 40px),1140px)}body{padding-bottom:20px}}
 </style>
 </head>
 <body>
-<div id="storeArea">
-<div class="wrap">
-<header>
-  <div class="top">
-    <img class="logo" src="logo-afm.png" alt="Logo ADISA FRESH MART" onerror="this.style.display='none'">
-    <div class="brand"><b>ADISA FRESH MART</b></div>
-    <div class="head-actions"><button class="admin-open" onclick="openAdmin()">ADMIN</button><button class="cart-open" onclick="openCart()">🛒 <span id="cartCount">0</span></button></div>
-  </div>
-</header>
-<div class="search"><input id="searchBox" placeholder="Cari jamu, sayur, frozen food..." oninput="renderProducts()"></div>
-<div id="beranda" class="hero"><h1>Bahan Segar,<br>Hidup Lebih Praktis</h1></div>
-<div class="benefits icon-benefits" aria-label="Layanan ADISA FRESH MART">
- <div class="benefit" title="Bahan pilihan">🌿</div>
- <div class="benefit" title="Bersih dan tertata">🧼</div>
- <div class="benefit" title="Praktis siap masak">🍲</div>
- <div class="benefit" title="Pengantaran">🛵</div>
-</div>
-<section id="kategori"><div class="section-title"><h2>Kategori</h2><small>Pilih sesuai kebutuhan</small></div>
- <div class="categories" id="categoryList">
-  <button class="cat active" onclick="setCategory('Semua Produk',this)">Semua Produk</button>
-  <button class="cat" onclick="setCategory('Jamu & Herbal',this)">Jamu & Herbal</button>
-  <button class="cat" onclick="setCategory('Lauk Mentah Berbumbu',this)">Lauk Mentah Berbumbu</button>
-  <button class="cat" onclick="setCategory('Paket Sayuran',this)">Paket Sayuran</button>
-  <button class="cat" onclick="setCategory('Frozen Food',this)">Frozen Food</button>
-  <button class="cat" onclick="setCategory('Bumbu Dapur',this)">Bumbu Dapur</button>
-  <button class="cat" onclick="setCategory('Camilan',this)">Camilan</button>
- </div>
-</section>
-<section id="produk"><div class="section-title"><h2>Produk Pilihan</h2><small id="productCount"></small></div><div class="products" id="productGrid"></div></section>
-<section id="info"><div class="section-title"><h2>Informasi Pemesanan</h2></div><div class="info-box"><b>Cara pesan:</b><br>1. Pilih produk dan masukkan ke keranjang.<br>2. Isi nama, nomor WhatsApp, alamat, dan tanggal pengantaran.<br>3. Tekan tombol kirim pesanan untuk melanjutkan ke WhatsApp admin.<br><br><b>Pembayaran:</b> Transfer atau COD sesuai kesepakatan. Untuk produk tertentu, ketersediaan dan jadwal akan dikonfirmasi admin.</div></section>
-<footer>© 2026 ADISA FRESH MART • Terima kasih sudah berbelanja.</footer>
-</div>
-</div>
-
-<div id="adminArea">
- <div class="admin-shell">
-  <div class="admin-top"><div><b>ADISA FRESH MART — ADMIN</b><div class="muted">Kelola katalog dan stok produk</div></div><div class="admin-actions"><button onclick="backToStore()">Kembali ke Toko</button><button id="logoutBtn" onclick="adminLogout()" style="display:none">Keluar</button></div></div>
-  <div id="adminLogin" class="admin-card" style="max-width:430px;margin:35px auto">
-   <h2>Login Admin</h2><p class="muted">Masuk menggunakan akun admin yang sudah terdaftar.</p>
-   <div class="admin-field"><label>Email</label><input id="adminEmail" type="email" autocomplete="username" placeholder="Email admin"></div>
-   <div class="admin-field"><label>Password</label><input id="adminPassword" type="password" autocomplete="current-password" placeholder="Password"></div>
-   <button class="admin-primary" style="width:100%" onclick="adminLogin()">Masuk</button><div id="loginMessage" class="status-msg"></div>
-  </div>
-  <div id="adminDashboard" style="display:none">
-   <div class="admin-tabs">
-    <button class="active" onclick="showAdminTab('summary',this)">Ringkasan</button>
-    <button onclick="showAdminTab('product',this)">Kelola Produk</button>
-    <button onclick="showAdminTab('stock',this)">Stok</button>
-    <button onclick="showAdminTab('orders',this)">Pesanan</button>
-    <button onclick="showAdminTab('promo',this)">Promo</button>
-    <button onclick="showAdminTab('settings',this)">Pengaturan</button>
-   </div>
-   <div id="tab-summary" class="admin-tab">
-    <div class="admin-card"><h2>Ringkasan Toko</h2><div class="stats"><div class="stat"><b id="statProducts">0</b><span>Total produk</span></div><div class="stat"><b id="statActive">0</b><span>Produk aktif</span></div><div class="stat"><b id="statStock">0</b><span>Produk dengan stok</span></div><div class="stat"><b id="statOut">0</b><span>Stok habis</span></div></div></div>
-   </div>
-   <div id="tab-product" class="admin-tab" style="display:none">
-    <div class="admin-card"><h2 id="formTitle">Tambah Produk</h2>
-     <input type="hidden" id="pId">
-     <div class="admin-grid">
-      <div class="admin-field"><label>Nama Produk *</label><input id="pNama" required></div>
-      <div class="admin-field"><label>Kode Produk</label><input id="pKode"></div>
-      <div class="admin-field"><label>Kategori</label><input id="pKategori" placeholder="Contoh: Jamu & Herbal"></div>
-      <div class="admin-field"><label>Harga (Rp) *</label><input id="pHarga" type="number" min="0"></div>
-      <div class="admin-field"><label>Satuan</label><input id="pSatuan" placeholder="botol / bungkus / paket"></div>
-      <div class="admin-field"><label>Berat (gram)</label><input id="pBerat" type="number" min="0"></div>
-      <div class="admin-field full"><label>Deskripsi</label><textarea id="pDeskripsi"></textarea></div>
-      <div class="admin-field"><label>Bahan</label><textarea id="pBahan"></textarea></div>
-      <div class="admin-field"><label>Isi Produk</label><textarea id="pIsi"></textarea></div>
-      <div class="admin-field"><label>Manfaat / Keunggulan</label><textarea id="pManfaat"></textarea></div>
-      <div class="admin-field"><label>Waktu Konsumsi</label><input id="pWaktu"></div>
-      <div class="admin-field"><label>Cara Penyajian</label><textarea id="pSaji"></textarea></div>
-      <div class="admin-field"><label>Penyimpanan</label><textarea id="pSimpan"></textarea></div>
-      <div class="admin-field"><label>Perhatian</label><textarea id="pPerhatian"></textarea></div>
-      <div class="admin-field"><label>Jenis Penjualan</label><select id="pJenis"><option value="ready_stock">Ready Stock</option><option value="pre_order">Pre-Order</option></select></div>
-      <div class="admin-field"><label>Estimasi Pengerjaan</label><input id="pEstimasi" placeholder="Contoh: 1-2 hari"></div>
-      <div class="admin-field"><label>Status Produk</label><select id="pStatus"><option value="aktif">Aktif</option><option value="nonaktif">Nonaktif</option></select></div>
-      <div class="admin-field"><label>Kelola Stok</label><select id="pKelola"><option value="true">Ya</option><option value="false">Tidak</option></select></div>
-      <div class="admin-field"><label>Jumlah Stok</label><input id="pStok" type="number" min="0" value="0"></div>
-      <div class="admin-field"><label>Tampilkan Ketersediaan</label><select id="pTersedia"><option value="true">Ya</option><option value="false">Tidak</option></select></div>
-      <div class="admin-field full"><label>Foto Produk (JPG/PNG/WEBP, maks. 5 MB)</label><input id="pFoto" type="file" accept="image/jpeg,image/png,image/webp"><div class="muted" id="photoNote">Pilih foto jika ingin menambah atau mengganti gambar.</div></div>
-     </div>
-     <div class="admin-actions"><button class="admin-primary" onclick="saveProduct()">Simpan Produk</button><button class="admin-secondary" onclick="clearProductForm()">Kosongkan</button></div><div id="productMessage" class="status-msg"></div>
+<div class="site">
+  <div class="top-art"></div>
+  <header>
+    <div class="headrow">
+      <div class="logo" aria-label="Logo Adisa Fresh Mart">A</div>
+      <div class="brand">
+        <h1>ADISA FRESH MART</h1>
+        <p>🌿 Segar Pilihannya, Bahagia Keluarganya 🌿</p>
+      </div>
+      <button class="headbtn" id="cartTop" aria-label="Buka keranjang">🛒<span class="badge" id="cartBadge">0</span></button>
+      <button class="headbtn" id="menuTop" aria-label="Buka menu">☰</button>
     </div>
-    <div class="admin-card"><h3>Daftar Produk</h3><div class="table-wrap"><table><thead><tr><th>Produk</th><th>Harga</th><th>Stok</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="productRows"><tr><td colspan="5">Memuat data...</td></tr></tbody></table></div></div>
-   </div>
-   <div id="tab-stock" class="admin-tab" style="display:none"><div class="admin-card"><h2>Stok Produk</h2><div class="table-wrap"><table><thead><tr><th>Produk</th><th>Kelola Stok</th><th>Jumlah</th><th>Status</th></tr></thead><tbody id="stockRows"></tbody></table></div></div></div>
-   <div id="tab-orders" class="admin-tab" style="display:none"><div class="admin-card"><h2>Pesanan</h2><div class="notice">Pemesanan pelanggan saat ini diteruskan ke WhatsApp admin. Pesanan belum disimpan ke tabel database, sehingga belum muncul sebagai daftar pesanan di dashboard.</div></div></div>
-   <div id="tab-promo" class="admin-tab" style="display:none"><div class="admin-card"><h2>Promo</h2><div class="notice">Pengaturan promo khusus belum dihubungkan. Informasi promo dapat ditambahkan pada deskripsi produk sementara.</div></div></div>
-   <div id="tab-settings" class="admin-tab" style="display:none"><div class="admin-card"><h2>Pengaturan</h2><div class="notice">Pengaturan toko lanjutan belum dihubungkan. Akses admin tetap diperiksa melalui Supabase dan kebijakan keamanan database.</div></div></div>
-  </div>
- </div>
+    <div class="searchrow">
+      <div class="searchbox"><span>⌕</span><input id="search" type="search" placeholder="Cari produk..." autocomplete="off"></div>
+      <button class="filterbtn" id="filterBtn" aria-label="Filter kategori">☷</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <p class="hero-title">Belanja Segar, Praktis, dan Mudah</p>
+    <p class="hero-sub">Pilihan kebutuhan harian untuk keluarga</p>
+    <div class="category-wrap">
+      <button class="cat-arrow" id="catLeft" aria-label="Kategori sebelumnya">‹</button>
+      <div class="categories" id="categories">
+        <button class="cat active" data-category=""><span class="catpic">🌿</span><span>Semua</span></button>
+        <button class="cat" data-category="Jamu & Herbal"><span class="catpic">🍹</span><span>Jamu &<br>Herbal</span></button>
+        <button class="cat" data-category="Sayuran Segar"><span class="catpic">🥬</span><span>Sayuran<br>Segar</span></button>
+        <button class="cat" data-category="Ayam & Protein"><span class="catpic">🍗</span><span>Ayam &<br>Protein</span></button>
+        <button class="cat" data-category="Frozen Food"><span class="catpic">🧊</span><span>Frozen<br>Food</span></button>
+        <button class="cat" data-category="Bumbu Dapur"><span class="catpic">🧄</span><span>Bumbu<br>Dapur</span></button>
+        <button class="cat" data-category="Kerupuk & Camilan"><span class="catpic">🥨</span><span>Kerupuk &<br>Camilan</span></button>
+        <button class="cat" data-category="Paket Hemat"><span class="catpic">🧺</span><span>Paket<br>Hemat</span></button>
+        <button class="cat" data-category="Sembako"><span class="catpic">🛍️</span><span>Sembako</span></button>
+      </div>
+      <button class="cat-arrow" id="catRight" aria-label="Kategori berikutnya">›</button>
+    </div>
+  </section>
+
+  <main class="content" id="homeContent">
+    <div class="section-head">
+      <div><h2 id="listTitle">Pilihan Hari Ini</h2><p>Produk pilihan ADISA FRESH MART</p></div>
+      <span class="result-count" id="resultCount"></span>
+    </div>
+    <section class="products" id="products">
+      <div class="loading">Memuat produk toko...</div>
+    </section>
+    <div class="info-strip">🌿 Produk segar • Pemesanan mudah • Konfirmasi langsung oleh admin</div>
+    <p class="note" style="text-align:center;margin:12px 0 0">Pesanan akan diperiksa admin terlebih dahulu untuk memastikan ketersediaan, harga akhir, dan jadwal pengantaran/pengambilan.</p>
+  </main>
 </div>
 
-<div class="modal" id="cartModal"><div class="modal-box">
- <div class="modal-head"><h3>Keranjang Belanja</h3><button class="x" onclick="closeModal('cartModal')">✕</button></div>
- <div id="cartItems"></div><div class="field"><label>Nama</label><input id="buyerName" placeholder="Nama penerima"></div>
- <div class="field"><label>Nomor WhatsApp</label><input id="buyerPhone" placeholder="08xxxxxxxxxx" inputmode="tel"></div>
- <div class="field"><label>Alamat Pengantaran</label><textarea id="buyerAddress" placeholder="Alamat lengkap"></textarea></div>
- <div class="field"><label>Rencana Tanggal Pengantaran</label><input id="buyerDate" type="date"></div>
- <div class="field"><label>Catatan</label><textarea id="buyerNote" placeholder="Catatan tambahan (jika ada)"></textarea></div>
- <button class="primary" onclick="sendOrder()">Kirim Pesanan ke WhatsApp</button><p class="muted">Pesanan akan dikirim ke WhatsApp admin untuk konfirmasi ketersediaan dan ongkir.</p>
-</div></div>
-<div class="modal" id="requestModal"><div class="modal-box">
- <div class="modal-head"><h3>Tanyakan Produk</h3><button class="x" onclick="closeModal('requestModal')">✕</button></div>
- <p id="requestProductName" class="muted"></p><div class="field"><label>Nama</label><input id="requestName"></div><div class="field"><label>Pesan</label><textarea id="requestText" placeholder="Tanyakan harga atau ketersediaan produk"></textarea></div><button class="primary" onclick="sendRequest()">Tanyakan via WhatsApp</button>
-</div></div>
+<nav class="bottomnav" aria-label="Navigasi utama">
+  <button class="tab active" data-tab="home"><span class="ico">⌂</span><span>Beranda</span></button>
+  <button class="tab" data-tab="categories"><span class="ico">▦</span><span>Kategori</span></button>
+  <button class="tab" data-tab="cart"><span class="ico">🛒<span class="badge" id="cartBadgeBottom">0</span></span><span>Keranjang</span></button>
+  <button class="tab" data-tab="admin"><span class="ico">◈</span><span>Admin</span></button>
+  <button class="tab" data-tab="account"><span class="ico">♟</span><span>Akun</span></button>
+</nav>
 
+<div class="overlay" id="cartOverlay" role="dialog" aria-modal="true" aria-label="Keranjang belanja">
+  <section class="sheet">
+    <div class="sheethead"><h2>Keranjang Belanja</h2><button class="close" data-close="cartOverlay">×</button></div>
+    <div id="cartItems"></div>
+    <div class="total"><span>Perkiraan total</span><span id="cartTotal">Rp 0</span></div>
+    <p class="note">Total masih berupa perkiraan. Admin akan mengonfirmasi ketersediaan produk, harga akhir, serta jadwal pesanan melalui WhatsApp.</p>
+    <div id="checkoutFields">
+      <div class="field"><label for="custName">Nama pemesan *</label><input id="custName" autocomplete="name" placeholder="Nama lengkap"></div>
+      <div class="field"><label for="custPhone">Nomor WhatsApp *</label><input id="custPhone" inputmode="tel" autocomplete="tel" placeholder="08xxxxxxxxxx"></div>
+      <div class="field"><label for="custAddress">Alamat / lokasi pengambilan *</label><textarea id="custAddress" placeholder="Tuliskan alamat atau pilih pengambilan di toko"></textarea></div>
+      <div class="field"><label for="custNote">Catatan pesanan</label><textarea id="custNote" placeholder="Contoh: jam pengantaran yang diinginkan, tingkat kematangan, dll."></textarea></div>
+    </div>
+    <button class="primary" id="sendOrder">Kirim Pesanan via WhatsApp</button>
+    <button class="secondary" id="continueShop" style="width:100%;margin-top:8px">Lanjut Belanja</button>
+  </section>
+</div>
+
+<div class="overlay" id="accountOverlay" role="dialog" aria-modal="true" aria-label="Informasi akun">
+  <section class="sheet">
+    <div class="sheethead"><h2>Akun & Informasi</h2><button class="close" data-close="accountOverlay">×</button></div>
+    <div class="accountbox"><strong style="color:var(--green)">Selamat datang di ADISA FRESH MART 🌿</strong><p class="note">Belanja kebutuhan segar keluarga dengan mudah. Untuk saat ini, pemesanan dilakukan melalui WhatsApp dan dikonfirmasi langsung oleh admin.</p></div>
+    <p><strong>Jam pemesanan reguler</strong><br><span class="note">Pesanan reguler diterima sampai pukul 16.00 WITA. Ketersediaan dan jadwal akhir dikonfirmasi admin.</span></p>
+    <p><strong>Bantuan pesanan</strong><br><span class="note">Hubungi admin melalui tombol WhatsApp saat mengirim pesanan.</span></p>
+    <a class="secondary" href="admin.html" style="display:block;text-align:center;margin-top:14px">Masuk halaman Admin</a>
+  </section>
+</div>
+
+<div class="overlay" id="filterOverlay" role="dialog" aria-modal="true" aria-label="Pilih kategori">
+  <section class="sheet">
+    <div class="sheethead"><h2>Pilih Kategori</h2><button class="close" data-close="filterOverlay">×</button></div>
+    <div id="filterChoices" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px"></div>
+  </section>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL='https://rnprbkveecbawgmwdwxl.supabase.co';
-const SUPABASE_KEY='sb_publishable_7o0SP7VYOFhYJ0qyDrPtzw_2VvkuiMy';
-const ADMIN_WA='6281241170658';
-const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-let allProducts=[],activeCategory='Semua Produk',cart=new Map(),requestingProduct='';
-const fallbackProducts=[
- {id:'demo1',nama:'Jamu Kunyit Asam',deskripsi:'Minuman tradisional dengan rasa segar khas kunyit dan asam jawa.',harga:10000,satuan:'botol',kategori:'Jamu & Herbal',gambar:'',jenis_penjualan:'ready_stock',status_produk:'aktif',tersedia:true},
- {id:'demo2',nama:'Jamu Beras Kencur',deskripsi:'Minuman herbal tradisional untuk menemani hari keluarga.',harga:10000,satuan:'botol',kategori:'Jamu & Herbal',gambar:'',jenis_penjualan:'ready_stock',status_produk:'aktif',tersedia:true},
- {id:'demo3',nama:'Ayam Bumbu Kuning Siap Masak',deskripsi:'Lauk mentah berbumbu, praktis untuk disiapkan di rumah.',harga:20000,satuan:'paket',kategori:'Lauk Mentah Berbumbu',gambar:'',jenis_penjualan:'pre_order',status_produk:'aktif',tersedia:true},
- {id:'demo4',nama:'Frozen Food Pilihan',deskripsi:'Pilihan frozen food. Hubungi admin untuk pilihan dan harga.',harga:0,satuan:'paket',kategori:'Frozen Food',gambar:'',status_produk:'aktif',tersedia:true},
- {id:'demo5',nama:'Paket Sayur Siap Masak',deskripsi:'Paket sayuran sesuai ketersediaan dan jadwal.',harga:0,satuan:'paket',kategori:'Paket Sayuran',gambar:'',status_produk:'aktif',tersedia:true},
- {id:'demo6',nama:'Bumbu & Bahan Dapur',deskripsi:'Pilihan bumbu dan bahan dapur untuk kebutuhan keluarga.',harga:0,satuan:'paket',kategori:'Bumbu Dapur',gambar:'',status_produk:'aktif',tersedia:true},
- {id:'demo7',nama:'Kerupuk & Camilan Pilihan',deskripsi:'Camilan pilihan untuk keluarga.',harga:10000,satuan:'bungkus',kategori:'Camilan',gambar:'',status_produk:'aktif',tersedia:true}
-];
-function rupiah(n){return Number(n||0).toLocaleString('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0})}
-function productPrice(p){return Number(p.harga||0)>0?rupiah(p.harga)+(p.satuan?'/'+p.satuan:''):'Tanyakan harga'}
-function visibleProduct(p){return String(p.status_produk||'aktif').toLowerCase()!=='nonaktif' && p.tersedia!==false}
-async function loadStoreProducts(){
- try{const {data,error}=await db.from('products').select('*').order('created_at',{ascending:false});if(error)throw error;allProducts=(data||[]).filter(visibleProduct);if(!allProducts.length)allProducts=fallbackProducts;}
- catch(e){allProducts=fallbackProducts;}
- renderProducts();
+/* Konfigurasi proyek ADISA FRESH MART */
+const SUPABASE_URL = 'https://rnprbkveecbawgmwdwxl.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_7o0SP7VYOFhYJ0qyDrPtzw_2VvkuiMy';
+const ADMIN_PAGE = 'admin.html';
+/* Ganti dengan nomor WhatsApp admin, format internasional tanpa +, spasi, atau tanda baca.
+   Contoh Indonesia: 62812xxxxxxxx. Jangan biarkan placeholder ini saat toko diluncurkan. */
+const ADMIN_WA = '6281241170658';
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = id => document.getElementById(id);
+let allProducts = [], cart = [], activeCategory = '', toastTimer;
+
+const categoryIcons = {
+  'Jamu & Herbal':'🍹','Sayuran Segar':'🥬','Ayam & Protein':'🍗','Frozen Food':'🧊',
+  'Bumbu Dapur':'🧄','Kerupuk & Camilan':'🥨','Paket Hemat':'🧺','Sembako':'🛍️','Lainnya':'🌿'
+};
+const rupiah = n => 'Rp ' + Number(n || 0).toLocaleString('id-ID');
+const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function notify(text){
+  $('toast').textContent = text; $('toast').classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>$('toast').classList.remove('show'),2300);
+}
+function productIcon(category){ return categoryIcons[category] || '🌿'; }
+function visibleProduct(p){ return p.status_produk === 'aktif'; }
+
+async function loadProducts(){
+  $('products').innerHTML = '<div class="loading">Memuat produk toko...</div>';
+  const {data,error} = await supabaseClient.from('products').select('*').eq('status_produk','aktif').order('created_at',{ascending:false});
+  if(error){
+    console.error('Gagal memuat katalog:',error);
+    $('products').innerHTML = '<div class="errorbox"><strong>Katalog belum dapat dimuat.</strong><br>Periksa koneksi internet dan izin baca publik tabel products di Supabase. Admin dapat memeriksa pengaturan database.</div>';
+    $('resultCount').textContent = '';
+    return;
+  }
+  allProducts = (data || []).filter(visibleProduct);
+  renderProducts();
 }
 function renderProducts(){
- const q=(document.getElementById('searchBox').value||'').toLowerCase();
- const list=allProducts.filter(p=>(activeCategory==='Semua Produk'||(p.kategori||'').toLowerCase().includes(activeCategory.toLowerCase().replace(' & ',' '))||(activeCategory==='Camilan'&&(p.kategori||'').toLowerCase().includes('kerupuk')))&&(`${p.nama||''} ${p.deskripsi||''} ${p.kategori||''}`).toLowerCase().includes(q));
- document.getElementById('productCount').textContent=list.length+' produk';
- document.getElementById('productGrid').innerHTML=list.map(p=>`<article class="card"><div class="pic">${p.gambar?`<img src="${esc(p.gambar)}" alt="${esc(p.nama)}">`:'ADISA FRESH MART'}</div><div class="card-body"><h3>${esc(p.nama||'Produk')}</h3><div class="desc">${esc(p.deskripsi||'Produk pilihan untuk keluarga.')}</div><div class="price">${productPrice(p)}</div><span class="tag">${p.jenis_penjualan==='pre_order'?'Pre-Order':'Tersedia'}</span><button onclick="addToCart('${String(p.id).replace(/'/g,'')}')">${Number(p.harga||0)>0?'Tambah ke Keranjang':'Tanyakan Produk'}</button></div></article>`).join('')||'<p class="muted">Produk belum tersedia pada kategori ini.</p>';
+  const query = $('search').value.trim().toLowerCase();
+  const filtered = allProducts.filter(p=>{
+    const category = p.kategori || 'Lainnya';
+    const text = [p.nama,p.kategori,p.deskripsi,p.kode_produk].join(' ').toLowerCase();
+    return (!activeCategory || category === activeCategory) && (!query || text.includes(query));
+  });
+  $('listTitle').textContent = activeCategory || (query ? 'Hasil Pencarian' : 'Pilihan Hari Ini');
+  $('resultCount').textContent = filtered.length + ' produk';
+  if(!filtered.length){
+    $('products').innerHTML = '<div class="empty"><strong>Produk belum ditemukan</strong>Silakan pilih kategori lain atau coba kata pencarian berbeda.</div>';
+    return;
+  }
+  $('products').innerHTML = filtered.map(p=>{
+    const image = p.gambar ? `<img src="${escapeHTML(p.gambar)}" alt="${escapeHTML(p.nama)}" loading="lazy" onerror="this.remove()">` : '';
+    const badge = p.label_promo || (p.jenis_penjualan === 'preorder' ? 'Pesan Dahulu' : 'Segar');
+    const unit = p.satuan ? `<span class="unit"> / ${escapeHTML(p.satuan)}</span>` : '';
+    return `<article class="card">
+      <div class="photo">${image}<span class="photo-fallback" ${p.gambar?'style="display:none"':''}>${productIcon(p.kategori)}</span><span class="tag">${escapeHTML(badge)}</span></div>
+      <div class="cardbody"><p class="pname">${escapeHTML(p.nama || 'Produk')}</p><p class="price">${rupiah(p.harga)}${unit}</p>
+      <button class="addbtn" type="button" data-add="${Number(p.id)}">🛒 Tambah</button></div>
+    </article>`;
+  }).join('');
+  $('products').querySelectorAll('[data-add]').forEach(btn=>btn.addEventListener('click',()=>addToCart(Number(btn.dataset.add))));
 }
-function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function setCategory(c,el){activeCategory=c;document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));el.classList.add('active');renderProducts()}
-function findProduct(id){return allProducts.find(p=>String(p.id)===String(id))}
-function addToCart(id){const p=findProduct(id);if(!p)return;if(Number(p.harga||0)<=0){requestingProduct=p.nama;document.getElementById('requestProductName').textContent=p.nama;document.getElementById('requestModal').classList.add('show');return}cart.set(id,(cart.get(id)||0)+1);document.getElementById('cartCount').textContent=[...cart.values()].reduce((a,b)=>a+b,0);openCart()}
-function openCart(){drawCart();document.getElementById('cartModal').classList.add('show')}
-function drawCart(){const box=document.getElementById('cartItems');if(!cart.size){box.innerHTML='<p class="muted">Keranjang masih kosong.</p>';return}box.innerHTML=[...cart.entries()].map(([id,n])=>{const p=findProduct(id);return p?`<div class="cart-row"><span>${esc(p.nama)} × ${n}</span><b>${rupiah(p.harga*n)}</b></div>`:''}).join('')+`<div class="cart-row"><b>Total sementara</b><b>${rupiah([...cart.entries()].reduce((s,[id,n])=>s+(Number(findProduct(id)?.harga||0)*n),0))}</b></div>`}
-function closeModal(id){document.getElementById(id).classList.remove('show')}
-function sendOrder(){
- if(!cart.size){alert('Keranjang masih kosong.');return}
- const name=document.getElementById('buyerName').value.trim(),phone=document.getElementById('buyerPhone').value.trim(),address=document.getElementById('buyerAddress').value.trim();
- if(!name||!phone||!address){alert('Mohon isi nama, nomor WhatsApp, dan alamat.');return}
- let lines=[...cart.entries()].map(([id,n])=>{const p=findProduct(id);return p?`- ${p.nama} x ${n} = ${rupiah(Number(p.harga||0)*n)}`:''}).join('\n');
- const total=[...cart.entries()].reduce((s,[id,n])=>s+(Number(findProduct(id)?.harga||0)*n),0);
- const msg=`PESANAN ADISA FRESH MART\nNama: ${name}\nWhatsApp: ${phone}\nAlamat: ${address}\nTanggal: ${document.getElementById('buyerDate').value||'-'}\n\n${lines}\nTotal sementara: ${rupiah(total)}\nCatatan: ${document.getElementById('buyerNote').value||'-'}\n\nMohon konfirmasi ketersediaan dan ongkir.`;
- window.open('https://wa.me/'+ADMIN_WA+'?text='+encodeURIComponent(msg),'_blank');
+function addToCart(id){
+  const p = allProducts.find(x=>Number(x.id)===id); if(!p)return;
+  const item = cart.find(x=>Number(x.id)===id);
+  if(item)item.qty++; else cart.push({id:p.id,name:p.nama,price:Number(p.harga||0),unit:p.satuan||'',qty:1});
+  updateCart(); notify((p.nama||'Produk')+' ditambahkan ke keranjang.');
 }
-function sendRequest(){const name=document.getElementById('requestName').value.trim();const msg=document.getElementById('requestText').value.trim();if(!name){alert('Isi nama terlebih dahulu.');return}window.open('https://wa.me/'+ADMIN_WA+'?text='+encodeURIComponent(`ADISA FRESH MART\nNama: ${name}\nProduk: ${requestingProduct}\nPertanyaan: ${msg||'Mohon info harga dan ketersediaan.'}`),'_blank');closeModal('requestModal')}
-function openAdmin(){document.getElementById('storeArea').classList.add('hidden');document.getElementById('adminArea').classList.add('active');document.getElementById('adminLogin').style.display='block';document.getElementById('adminDashboard').style.display='none';document.getElementById('loginMessage').textContent=''}
-function backToStore(){document.getElementById('adminArea').classList.remove('active');document.getElementById('storeArea').classList.remove('hidden')}
-async function adminLogin(){
- const email=document.getElementById('adminEmail').value.trim(),password=document.getElementById('adminPassword').value;
- const msg=document.getElementById('loginMessage');msg.textContent='Memeriksa akun...';
- const {error}=await db.auth.signInWithPassword({email,password});
- if(error){msg.textContent='Login gagal. Periksa email dan password.';return}
- await verifyAdmin();
+function updateCart(){
+  const count = cart.reduce((n,x)=>n+x.qty,0);
+  $('cartBadge').textContent = count; $('cartBadgeBottom').textContent = count;
+  $('cartBadge').style.display = count ? 'grid':'none';
+  $('cartBadgeBottom').style.display = count ? 'grid':'none';
+  $('cartTotal').textContent = rupiah(cart.reduce((n,x)=>n+x.price*x.qty,0));
+  if(!cart.length){
+    $('cartItems').innerHTML = '<div class="empty"><strong>Keranjang masih kosong</strong>Yuk pilih produk segar untuk keluarga.</div>';
+    $('sendOrder').disabled = true; $('sendOrder').style.opacity = '.55';
+    return;
+  }
+  $('sendOrder').disabled = false; $('sendOrder').style.opacity = '1';
+  $('cartItems').innerHTML = cart.map(x=>`<div class="cartline"><div><strong>${escapeHTML(x.name)}</strong><small>${rupiah(x.price)}${x.unit?' / '+escapeHTML(x.unit):''}</small></div><div class="qty"><button data-minus="${x.id}" aria-label="Kurangi">−</button><b>${x.qty}</b><button data-plus="${x.id}" aria-label="Tambah">+</button></div></div>`).join('');
+  $('cartItems').querySelectorAll('[data-minus]').forEach(b=>b.onclick=()=>changeQty(Number(b.dataset.minus),-1));
+  $('cartItems').querySelectorAll('[data-plus]').forEach(b=>b.onclick=()=>changeQty(Number(b.dataset.plus),1));
 }
-async function verifyAdmin(){
- const msg=document.getElementById('loginMessage');
- const {data,error}=await db.rpc('is_admin');
- if(error||data!==true){await db.auth.signOut();msg.textContent='Akun ini belum memiliki akses admin.';return}
- document.getElementById('adminLogin').style.display='none';document.getElementById('adminDashboard').style.display='block';document.getElementById('logoutBtn').style.display='inline-block';await loadAdminProducts();
+function changeQty(id,delta){
+  const item=cart.find(x=>Number(x.id)===id);if(!item)return;
+  item.qty+=delta;if(item.qty<=0)cart=cart.filter(x=>Number(x.id)!==id);
+  updateCart();
 }
-async function adminLogout(){await db.auth.signOut();document.getElementById('adminDashboard').style.display='none';document.getElementById('adminLogin').style.display='block';document.getElementById('logoutBtn').style.display='none';document.getElementById('adminPassword').value='';document.getElementById('loginMessage').textContent='Anda sudah keluar dari akun admin.'}
-function showAdminTab(tab,btn){document.querySelectorAll('.admin-tab').forEach(x=>x.style.display='none');document.getElementById('tab-'+tab).style.display='block';document.querySelectorAll('.admin-tabs button').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}
-let adminProducts=[];
-async function loadAdminProducts(){
- const {data,error}=await db.from('products').select('*').order('created_at',{ascending:false});
- if(error){document.getElementById('productMessage').textContent='Gagal memuat produk: '+error.message;return}
- adminProducts=data||[];drawAdminProducts();
- document.getElementById('statProducts').textContent=adminProducts.length;
- document.getElementById('statActive').textContent=adminProducts.filter(p=>String(p.status_produk||'aktif')!=='nonaktif').length;
- document.getElementById('statStock').textContent=adminProducts.filter(p=>p.kelola_stok===true).length;
- document.getElementById('statOut').textContent=adminProducts.filter(p=>p.kelola_stok===true&&Number(p.stok||0)<=0).length;
+function openOverlay(id){$(id).classList.add('show');document.body.style.overflow='hidden';}
+function closeOverlay(id){$(id).classList.remove('show');if(!document.querySelector('.overlay.show'))document.body.style.overflow='';}
+function showCart(){updateCart();openOverlay('cartOverlay');}
+function sendWhatsAppOrder(){
+  if(!cart.length)return;
+  const name=$('custName').value.trim(),phone=$('custPhone').value.trim(),address=$('custAddress').value.trim(),note=$('custNote').value.trim();
+  if(!name||!phone||!address){notify('Lengkapi nama, nomor WhatsApp, dan alamat/lokasi pengambilan.');return;}
+  if(ADMIN_WA.includes('GANTI_DENGAN')){
+    notify('Nomor WhatsApp admin belum diatur pada kode toko.');return;
+  }
+  const lines=cart.map(x=>`• ${x.name} x${x.qty} — ${rupiah(x.price*x.qty)}`).join('\n');
+  const total=cart.reduce((n,x)=>n+x.price*x.qty,0);
+  const message=[
+    'Assalamu’alaikum, saya ingin memesan di ADISA FRESH MART.',
+    '',`Nama: ${name}`,`WhatsApp pelanggan: ${phone}`,`Alamat/lokasi: ${address}`,
+    '', 'Daftar pesanan:',lines,'',`Perkiraan total: ${rupiah(total)}`,
+    note?`Catatan: ${note}`:'',
+    '', 'Mohon konfirmasi ketersediaan produk, harga akhir, dan jadwal pengantaran/pengambilan. Terima kasih.'
+  ].filter(Boolean).join('\n');
+  const url='https://wa.me/'+ADMIN_WA.replace(/\D/g,'')+'?text='+encodeURIComponent(message);
+  window.open(url,'_blank','noopener');
 }
-function drawAdminProducts(){
- document.getElementById('productRows').innerHTML=adminProducts.map(p=>`<tr><td>${esc(p.nama)}</td><td>${rupiah(p.harga)}</td><td>${p.kelola_stok?Number(p.stok||0):'Tidak dikelola'}</td><td>${esc(p.status_produk||'aktif')}</td><td><button class="edit-btn" onclick="editProduct('${p.id}')">Edit</button><button class="delete-btn" onclick="deleteProduct('${p.id}')">Hapus</button></td></tr>`).join('')||'<tr><td colspan="5">Belum ada produk.</td></tr>';
- document.getElementById('stockRows').innerHTML=adminProducts.map(p=>`<tr><td>${esc(p.nama)}</td><td>${p.kelola_stok?'Ya':'Tidak'}</td><td>${p.kelola_stok?Number(p.stok||0):'-'}</td><td>${Number(p.stok||0)<=0&&p.kelola_stok?'Habis':esc(p.status_produk||'aktif')}</td></tr>`).join('')||'<tr><td colspan="4">Belum ada produk.</td></tr>';
+function selectCategory(category){
+  activeCategory=category;
+  document.querySelectorAll('.cat').forEach(b=>b.classList.toggle('active',b.dataset.category===category));
+  renderProducts();closeOverlay('filterOverlay');
+  document.querySelector('.hero').scrollIntoView({behavior:'smooth',block:'start'});
 }
-function val(id){return document.getElementById(id).value}
-function setVal(id,v){document.getElementById(id).value=v??''}
-function clearProductForm(){
- ['pId','pNama','pKode','pKategori','pHarga','pSatuan','pBerat','pDeskripsi','pBahan','pIsi','pManfaat','pWaktu','pSaji','pSimpan','pPerhatian','pEstimasi'].forEach(id=>setVal(id,''));
- setVal('pJenis','ready_stock');setVal('pStatus','aktif');setVal('pKelola','true');setVal('pStok','0');setVal('pTersedia','true');document.getElementById('pFoto').value='';document.getElementById('formTitle').textContent='Tambah Produk';document.getElementById('photoNote').textContent='Pilih foto jika ingin menambah atau mengganti gambar.';
+function makeFilterChoices(){
+  const categories=['','Jamu & Herbal','Sayuran Segar','Ayam & Protein','Frozen Food','Bumbu Dapur','Kerupuk & Camilan','Paket Hemat','Sembako','Lainnya'];
+  $('filterChoices').innerHTML=categories.map(c=>`<button class="secondary" data-filter="${escapeHTML(c)}">${c?productIcon(c)+' '+escapeHTML(c):'🌿 Semua Produk'}</button>`).join('');
+  $('filterChoices').querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>selectCategory(b.dataset.filter));
 }
-function editProduct(id){
- const p=adminProducts.find(x=>String(x.id)===String(id));if(!p)return;
- const map={pId:'id',pNama:'nama',pKode:'kode_produk',pKategori:'kategori',pHarga:'harga',pSatuan:'satuan',pBerat:'berat',pDeskripsi:'deskripsi',pBahan:'bahan',pIsi:'isi_produk',pManfaat:'manfaat',pWaktu:'waktu_konsumsi',pSaji:'cara_penyajian',pSimpan:'penyimpanan',pPerhatian:'perhatian',pJenis:'jenis_penjualan',pEstimasi:'estimasi_pengerjaan',pStatus:'status_produk',pStok:'stok'};
- Object.entries(map).forEach(([id,key])=>setVal(id,p[key]));
- setVal('pKelola',String(p.kelola_stok??true));setVal('pTersedia',String(p.tersedia??true));document.getElementById('formTitle').textContent='Edit Produk';document.getElementById('photoNote').textContent=p.gambar?'Foto saat ini tersimpan. Pilih file baru jika ingin mengganti.':'Belum ada foto.';document.getElementById('pFoto').value='';
- document.querySelectorAll('.admin-tabs button').forEach((b,i)=>{if(i===1)showAdminTab('product',b)});document.getElementById('tab-product').scrollIntoView({behavior:'smooth'});
-}
-async function saveProduct(){
- const nama=val('pNama').trim(),harga=Number(val('pHarga'));if(!nama||!val('pHarga')){document.getElementById('productMessage').textContent='Nama dan harga wajib diisi.';return}
- const msg=document.getElementById('productMessage');msg.textContent='Menyimpan produk...';
- const file=document.getElementById('pFoto').files[0];let gambar=adminProducts.find(p=>String(p.id)===val('pId'))?.gambar||null;
- if(file){
-  if(file.size>5*1024*1024){msg.textContent='Ukuran foto maksimal 5 MB.';return}
-  if(!['image/jpeg','image/png','image/webp'].includes(file.type)){msg.textContent='Format foto harus JPG, PNG, atau WEBP.';return}
-  const ext=file.name.split('.').pop().toLowerCase(),path=Date.now()+'-'+Math.random().toString(36).slice(2)+'.'+ext;
-  const {error:upErr}=await db.storage.from('foto-produk').upload(path,file,{upsert:false,contentType:file.type});
-  if(upErr){msg.textContent='Foto gagal diunggah: '+upErr.message;return}
-  const {data:urlData}=db.storage.from('foto-produk').getPublicUrl(path);gambar=urlData.publicUrl;
- }
- const payload={
-  nama,kode_produk:val('pKode')||null,kategori:val('pKategori')||null,harga,
-  satuan:val('pSatuan')||null,berat:Number(val('pBerat')||0),deskripsi:val('pDeskripsi')||null,
-  bahan:val('pBahan')||null,isi_produk:val('pIsi')||null,manfaat:val('pManfaat')||null,
-  waktu_konsumsi:val('pWaktu')||null,cara_penyajian:val('pSaji')||null,penyimpanan:val('pSimpan')||null,
-  perhatian:val('pPerhatian')||null,jenis_penjualan:val('pJenis'),estimasi_pengerjaan:val('pEstimasi')||null,
-  status_produk:val('pStatus'),kelola_stok:val('pKelola')==='true',stok:Number(val('pStok')||0),
-  tersedia:val('pTersedia')==='true',gambar
- };
- let result;
- if(val('pId'))result=await db.from('products').update(payload).eq('id',val('pId'));
- else result=await db.from('products').insert(payload);
- if(result.error){msg.textContent='Gagal menyimpan: '+result.error.message;return}
- msg.textContent='Produk berhasil disimpan.';clearProductForm();await loadAdminProducts();await loadStoreProducts();
-}
-async function deleteProduct(id){
- if(!confirm('Hapus produk ini?'))return;
- const {error}=await db.from('products').delete().eq('id',id);
- if(error){alert('Gagal menghapus: '+error.message);return}
- await loadAdminProducts();await loadStoreProducts();
-}
-db.auth.onAuthStateChange((event,session)=>{});
-loadStoreProducts();
+
+$('products').addEventListener('click',e=>{
+  const card=e.target.closest('.card'); if(!card)return;
+  const img=card.querySelector('.photo img'),fallback=card.querySelector('.photo-fallback');
+  if(img && fallback && !img.complete)fallback.style.display='grid';
+});
+$('search').addEventListener('input',renderProducts);
+document.querySelectorAll('.cat').forEach(b=>b.addEventListener('click',()=>selectCategory(b.dataset.category)));
+$('catLeft').onclick=()=>$('categories').scrollBy({left:-180,behavior:'smooth'});
+$('catRight').onclick=()=>$('categories').scrollBy({left:180,behavior:'smooth'});
+$('filterBtn').onclick=()=>{makeFilterChoices();openOverlay('filterOverlay')};
+$('cartTop').onclick=showCart;
+$('continueShop').onclick=()=>closeOverlay('cartOverlay');
+$('sendOrder').onclick=sendWhatsAppOrder;
+$('menuTop').onclick=()=>{makeFilterChoices();openOverlay('filterOverlay')};
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closeOverlay(b.dataset.close));
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeOverlay(o.id)}));
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{
+  const tab=b.dataset.tab;
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));
+  if(tab==='home'){closeOverlay('accountOverlay');closeOverlay('cartOverlay');closeOverlay('filterOverlay');window.scrollTo({top:0,behavior:'smooth'});}
+  if(tab==='categories'){makeFilterChoices();openOverlay('filterOverlay');}
+  if(tab==='cart')showCart();
+  if(tab==='admin')window.location.href=ADMIN_PAGE;
+  if(tab==='account')openOverlay('accountOverlay');
+}));
+loadProducts();
+updateCart();
 </script>
 </body>
 </html>
