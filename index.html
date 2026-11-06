@@ -47,6 +47,11 @@ header{position:relative;padding:13px 16px 11px;background:linear-gradient(115de
 .cat.active .catpic{outline:2px solid var(--gold)}
 .cat.active{color:var(--green)}
 .content{padding:14px}
+.category-page{padding:14px;display:none}
+.category-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.category-tile{border:1px solid #d9dfce;background:#fffdf7;border-radius:15px;padding:15px 10px;display:flex;align-items:center;gap:10px;text-align:left;color:var(--green);font-weight:bold;box-shadow:0 3px 10px #173f2b12}
+.category-tile span:first-child{font-size:27px;width:38px;text-align:center}
+.category-page .section-head{margin-bottom:14px}
 .section-head{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:2px 2px 12px}
 .section-head h2{font: bold 20px Georgia;color:var(--green);margin:0}
 .section-head p{margin:2px 0 0;color:var(--muted);font-size:11px}
@@ -95,6 +100,32 @@ header{position:relative;padding:13px 16px 11px;background:linear-gradient(115de
 .toast.show{display:block}
 @media(min-width:700px){.content{padding:22px}.products{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.photo{height:210px}.hero{padding:18px}.cat{min-width:82px;width:82px}.catpic{width:62px;height:62px}}
 @media(min-width:980px){.products{grid-template-columns:repeat(4,minmax(0,1fr))}.site{margin:20px auto;border-radius:22px;overflow:hidden}.bottomnav{bottom:18px;border-radius:22px;width:min(calc(100% - 40px),1140px)}body{padding-bottom:20px}}
+
+/* FINAL DESIGN ADISA FRESH MART */
+.hero{padding:0;background:#f7f7ed;border-bottom:3px solid var(--gold)}
+.hero-banner{display:block;width:100%;height:auto;aspect-ratio:3.35/1;object-fit:cover;object-position:center}
+.hero .category-wrap{display:none}
+.searchrow{margin-top:12px}
+.category-shortcuts{display:flex;gap:8px;overflow-x:auto;padding:12px 14px 5px;scrollbar-width:none;background:#fffef8}
+.category-shortcuts::-webkit-scrollbar{display:none}
+.shortcut{flex:0 0 68px;border:1px solid #e4e7dc;background:#fff;border-radius:14px;padding:7px 4px;text-align:center;color:var(--green);font-size:10px;font-weight:700;box-shadow:0 2px 7px #173f2b12}
+.shortcut .symbol{display:block;font-size:24px;margin-bottom:3px}
+.quick-filters{display:flex;gap:7px;overflow-x:auto;padding:9px 14px 12px;scrollbar-width:none}
+.quick-filters button{border:1px solid #dce4d5;border-radius:22px;background:#f6f7f0;color:#3c5142;padding:7px 13px;white-space:nowrap;font-size:11px;font-weight:bold}
+.quick-filters button.active{background:var(--green2);color:white;border-color:var(--green2)}
+.media-section{padding:4px 14px 16px}
+.media-tabs{display:flex;gap:8px;margin:8px 0 12px}
+.media-tabs button{flex:1;border:1px solid #d9e2d5;border-radius:20px;padding:9px;background:#f4f7ed;color:var(--green);font-weight:bold}
+.media-tabs button.active{background:var(--green);color:#fff}
+.live-card{border-radius:16px;overflow:hidden;background:#f1f5e9;border:1px solid #dce4d5;padding:13px;margin-bottom:12px}
+.live-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#df2929;margin-right:6px;box-shadow:0 0 0 4px #df292922}
+.social-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
+.social-link{display:block;text-align:center;border-radius:12px;padding:10px 8px;background:#fff;border:1px solid #dce4d5;color:var(--green);font-weight:bold;font-size:12px}
+.video-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.video-card{border:1px solid #dce4d5;border-radius:14px;overflow:hidden;background:white;box-shadow:0 3px 10px #173f2b12}
+.video-card video,.video-card iframe{display:block;width:100%;aspect-ratio:9/16;object-fit:cover;background:#15291d;border:0}
+.video-card .video-caption{padding:9px;font-size:12px;font-weight:bold;color:var(--green)}
+@media(min-width:700px){.video-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hero-banner{aspect-ratio:3.35/1}}
 </style>
 </head>
 <body>
@@ -116,25 +147,23 @@ header{position:relative;padding:13px 16px 11px;background:linear-gradient(115de
     </div>
   </header>
 
-  <section class="hero">
-    <p class="hero-title">Belanja Segar, Praktis, dan Mudah</p>
-    <p class="hero-sub">Pilihan kebutuhan harian untuk keluarga</p>
-    <div class="category-wrap">
-      <button class="cat-arrow" id="catLeft" aria-label="Kategori sebelumnya">‹</button>
-      <div class="categories" id="categories">
-        <button class="cat active" data-category=""><span class="catpic">🌿</span><span>Semua</span></button>
-        <button class="cat" data-category="Jamu & Herbal"><span class="catpic">🍹</span><span>Jamu &<br>Herbal</span></button>
-        <button class="cat" data-category="Sayuran Segar"><span class="catpic">🥬</span><span>Sayuran<br>Segar</span></button>
-        <button class="cat" data-category="Ayam & Protein"><span class="catpic">🍗</span><span>Ayam &<br>Protein</span></button>
-        <button class="cat" data-category="Frozen Food"><span class="catpic">🧊</span><span>Frozen<br>Food</span></button>
-        <button class="cat" data-category="Bumbu Dapur"><span class="catpic">🧄</span><span>Bumbu<br>Dapur</span></button>
-        <button class="cat" data-category="Kerupuk & Camilan"><span class="catpic">🥨</span><span>Kerupuk &<br>Camilan</span></button>
-        <button class="cat" data-category="Paket Hemat"><span class="catpic">🧺</span><span>Paket<br>Hemat</span></button>
-        <button class="cat" data-category="Sembako"><span class="catpic">🛍️</span><span>Sembako</span></button>
-      </div>
-      <button class="cat-arrow" id="catRight" aria-label="Kategori berikutnya">›</button>
-    </div>
+  <section class="hero" aria-label="Banner promosi ADISA FRESH MART">
+    <img id="storeBanner" class="hero-banner" src="assets/banner-adisa-fresh-mart.png" alt="ADISA FRESH MART — Lengkapi Kebutuhan Usaha Kuliner & Rumah Tangga" fetchpriority="high">
   </section>
+  <div class="category-shortcuts" id="categoryShortcuts" aria-label="Kategori pilihan">
+    <button class="shortcut" data-shortcut="Jamu & Herbal"><span class="symbol">🍹</span>Jamu Herbal</button>
+    <button class="shortcut" data-shortcut="Kerupuk & Camilan"><span class="symbol">🥨</span>Camilan</button>
+    <button class="shortcut" data-shortcut="Frozen Food"><span class="symbol">🧊</span>Frozen Food</button>
+    <button class="shortcut" data-shortcut="Sayuran Segar"><span class="symbol">🥬</span>Sayur Segar</button>
+    <button class="shortcut" data-shortcut="Kemasan Makanan"><span class="symbol">🥡</span>Kemasan</button>
+    <button class="shortcut" data-shortcut="Paket Hemat"><span class="symbol">🧺</span>Paket Hemat</button>
+  </div>
+  <div class="quick-filters" aria-label="Pilihan produk">
+    <button class="active" data-quick="popular">Produk Populer</button>
+    <button data-quick="new">Produk Baru</button>
+    <button data-quick="promo">Promo</button>
+    <button data-quick="bundle">Paket Hemat</button>
+  </div>
 
   <main class="content" id="homeContent">
     <div class="section-head">
@@ -147,13 +176,20 @@ header{position:relative;padding:13px 16px 11px;background:linear-gradient(115de
     <div class="info-strip">🌿 Produk segar • Pemesanan mudah • Konfirmasi langsung oleh admin</div>
     <p class="note" style="text-align:center;margin:12px 0 0">Pesanan akan diperiksa admin terlebih dahulu untuk memastikan ketersediaan, harga akhir, dan jadwal pengantaran/pengambilan.</p>
   </main>
+  <main class="category-page" id="categoryPage">
+    <div class="section-head">
+      <div><h2>Kategori Produk</h2><p>Pilih kategori untuk melihat produk yang tersedia</p></div>
+    </div>
+    <div class="category-grid" id="categoryPageGrid"></div>
+    <button class="secondary" id="backHomeFromCategories" style="width:100%;margin-top:16px">Kembali ke Beranda</button>
+  </main>
 </div>
 
 <nav class="bottomnav" aria-label="Navigasi utama">
   <button class="tab active" data-tab="home"><span class="ico">⌂</span><span>Beranda</span></button>
   <button class="tab" data-tab="categories"><span class="ico">▦</span><span>Kategori</span></button>
   <button class="tab" data-tab="live"><span class="ico">🎥</span><span>Video / Live</span></button>
-  <button class="tab" data-tab="admin"><span class="ico">◈</span><span>Admin</span></button>
+  <button class="tab" data-tab="orders"><span class="ico">▣</span><span>Pesanan</span></button>
   <button class="tab" data-tab="account"><span class="ico">♟</span><span>Akun</span></button>
 </nav>
 
@@ -185,21 +221,26 @@ header{position:relative;padding:13px 16px 11px;background:linear-gradient(115de
 
 <div class="overlay" id="liveOverlay" role="dialog" aria-modal="true" aria-label="Video dan Live ADISA FRESH MART">
   <section class="sheet">
-    <div class="sheethead"><h2>🎥 Video / Live</h2><button class="close" data-close="liveOverlay">×</button></div>
-    <div class="accountbox">
-      <strong style="color:var(--green)">Video & Live ADISA FRESH MART</strong>
-      <p class="note">Lihat informasi produk, promo, cara penyajian, dan siaran langsung ADISA FRESH MART.</p>
-      <p class="note">Tautan akun TikTok toko belum dipasang. Setelah tautan akun diberikan, tombol ini dapat diarahkan langsung ke TikTok toko.</p>
+    <div class="sheethead"><h2>Video & LIVE ADISA FRESH MART</h2><button class="close" data-close="liveOverlay">×</button></div>
+    <div class="media-tabs"><button class="active" data-media-tab="live">🔴 LIVE</button><button data-media-tab="videos">▶ Video Produk</button></div>
+    <div id="livePanel">
+      <div class="live-card"><strong><span class="live-dot"></span>Jadwal & tautan LIVE</strong><p class="note">Saat siaran berlangsung, pilih platform yang sedang aktif untuk menonton. Tautan akun dapat dipasang oleh admin setelah integrasi akun.</p><div id="liveLinks" class="social-grid"></div></div>
     </div>
+    <div id="videoPanel" hidden><div id="storeVideos" class="video-grid"><p class="note">Video produk akan tampil di sini setelah ditambahkan melalui pengelolaan toko.</p></div></div>
+    <p class="note" style="margin-top:12px">Video pendek dari TikTok, YouTube, Facebook, dan Instagram dapat dibagikan ulang sesuai ketentuan masing-masing platform.</p>
   </section>
 </div>
 
+<div class="overlay" id="ordersOverlay" role="dialog" aria-modal="true" aria-label="Bantuan pesanan">
+  <section class="sheet"><div class="sheethead"><h2>Pesanan Saya</h2><button class="close" data-close="ordersOverlay">×</button></div>
+  <div class="accountbox"><strong style="color:var(--green)">Cek status pesanan</strong><p class="note">Untuk pesanan yang dikirim melalui WhatsApp, hubungi admin dengan menyebutkan nama dan waktu pemesanan agar statusnya dapat diperiksa.</p><a class="primary" style="display:block;text-align:center" href="https://wa.me/6281241170658?text=Assalamu'alaikum%20ADISA%20FRESH%20MART%2C%20saya%20ingin%20mengecek%20status%20pesanan." target="_blank" rel="noopener">Hubungi Admin via WhatsApp</a></div></section>
+</div>
 <div class="overlay" id="menuOverlay" role="dialog" aria-modal="true" aria-label="Menu utama">
   <section class="sheet">
     <div class="sheethead"><h2>Menu ADISA FRESH MART</h2><button class="close" data-close="menuOverlay">×</button></div>
     <div style="display:grid;gap:10px">
       <button class="secondary" data-menu-go="live">🎥 Video / Live</button>
-      <button class="secondary" data-menu-go="admin">🔐 Masuk Admin</button>
+      <a class="secondary" href="admin.html" style="display:block;text-align:center">🔐 Login khusus Admin</a>
       <button class="secondary" data-menu-go="account">👤 Akun & Informasi</button>
     </div>
   </section>
@@ -239,6 +280,39 @@ function notify(text){
 }
 function productIcon(category){ return categoryIcons[category] || '🌿'; }
 function visibleProduct(p){ return p.status_produk === 'aktif'; }
+
+
+const SOCIAL_LINKS = {
+  tiktok: '', youtube: '', facebook: '', instagram: '', threads: '', lemon8: ''
+};
+async function loadStoreBanner(){
+  try {
+    const {data,error}=await supabaseClient.from('store_settings').select('banner_url').eq('setting_key','main_banner').maybeSingle();
+    if(!error && data && data.banner_url) $('storeBanner').src=data.banner_url;
+  } catch(e){ console.info('Banner default digunakan sampai pengaturan banner tersedia.'); }
+}
+function renderSocialLinks(){
+  const labels={tiktok:'TikTok',youtube:'YouTube',facebook:'Facebook',instagram:'Instagram',threads:'Threads',lemon8:'Lemon8'};
+  $('liveLinks').innerHTML=Object.entries(SOCIAL_LINKS).filter(([k,v])=>v).map(([k,v])=>`<a class="social-link" href="${escapeHTML(v)}" target="_blank" rel="noopener">${labels[k]} ↗</a>`).join('') || '<p class="note">Tautan media sosial ADISA FRESH MART belum dipasang.</p>';
+}
+async function loadStoreVideos(){
+  try{
+    const {data,error}=await supabaseClient.from('store_videos').select('title,video_url,thumbnail_url,product_name').eq('is_active',true).order('created_at',{ascending:false});
+    if(error || !data || !data.length) return;
+    $('storeVideos').innerHTML=data.map(v=>`<article class="video-card"><video controls playsinline preload="metadata" poster="${escapeHTML(v.thumbnail_url||'')}"><source src="${escapeHTML(v.video_url)}"></video><div class="video-caption">${escapeHTML(v.title||v.product_name||'Video Produk')}</div></article>`).join('');
+  }catch(e){console.info('Video produk belum tersedia.');}
+}
+document.querySelectorAll('[data-media-tab]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('[data-media-tab]').forEach(x=>x.classList.toggle('active',x===b));
+  const live=b.dataset.mediaTab==='live';$('livePanel').hidden=!live;$('videoPanel').hidden=live;
+}));
+document.querySelectorAll('[data-shortcut]').forEach(b=>b.addEventListener('click',()=>selectCategory(b.dataset.shortcut)));
+document.querySelectorAll('[data-quick]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('[data-quick]').forEach(x=>x.classList.toggle('active',x===b));
+  const kind=b.dataset.quick;
+  if(kind==='promo') $('search').value='promo'; else if(kind==='bundle') selectCategory('Paket Hemat'); else $('search').value='';
+  if(kind!=='bundle'){activeCategory='';renderProducts();showHomeProducts();}
+}));
 
 async function loadProducts(){
   $('products').innerHTML = '<div class="loading">Memuat produk toko...</div>';
@@ -328,8 +402,24 @@ function sendWhatsAppOrder(){
 function selectCategory(category){
   activeCategory=category;
   document.querySelectorAll('.cat').forEach(b=>b.classList.toggle('active',b.dataset.category===category));
-  renderProducts();closeOverlay('filterOverlay');
+  renderProducts();
+  closeOverlay('filterOverlay');
+  showHomeProducts();
   document.querySelector('.hero').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function showHomeProducts(){
+  $('categoryPage').style.display='none';
+  $('homeContent').style.display='block';
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab==='home'));
+}
+function openCategoryPage(){
+  const items=[['','🌿','Semua Produk'],['Jamu & Herbal','🍹','Jamu & Herbal'],['Sayuran Segar','🥬','Sayuran Segar'],['Ayam & Protein','🍗','Ayam & Protein'],['Frozen Food','🧊','Frozen Food'],['Bumbu Dapur','🧄','Bumbu Dapur'],['Kerupuk & Camilan','🥨','Kerupuk & Camilan'],['Paket Hemat','🧺','Paket Hemat'],['Sembako','🛍️','Sembako'],['Lainnya','🌱','Lainnya']];
+  $('categoryPageGrid').innerHTML=items.map(([value,icon,label])=>`<button class="category-tile" type="button" data-page-category="${escapeHTML(value)}"><span>${icon}</span><span>${label}</span></button>`).join('');
+  $('homeContent').style.display='none';
+  $('categoryPage').style.display='block';
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab==='categories'));
+  window.scrollTo({top:0,behavior:'smooth'});
+  $('categoryPageGrid').querySelectorAll('[data-page-category]').forEach(b=>b.onclick=()=>selectCategory(b.dataset.pageCategory));
 }
 function makeFilterChoices(){
   const categories=['','Jamu & Herbal','Sayuran Segar','Ayam & Protein','Frozen Food','Bumbu Dapur','Kerupuk & Camilan','Paket Hemat','Sembako','Lainnya'];
@@ -348,6 +438,7 @@ $('catLeft').onclick=()=>$('categories').scrollBy({left:-180,behavior:'smooth'})
 $('catRight').onclick=()=>$('categories').scrollBy({left:180,behavior:'smooth'});
 $('filterBtn').onclick=()=>{makeFilterChoices();openOverlay('filterOverlay')};
 $('cartTop').onclick=showCart;
+$('backHomeFromCategories').onclick=showHomeProducts;
 $('continueShop').onclick=()=>closeOverlay('cartOverlay');
 $('sendOrder').onclick=sendWhatsAppOrder;
 $('menuTop').onclick=()=>openOverlay('menuOverlay');
@@ -356,10 +447,10 @@ document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{
 document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{
   const tab=b.dataset.tab;
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));
-  if(tab==='home'){document.querySelectorAll('.overlay').forEach(o=>closeOverlay(o.id));window.scrollTo({top:0,behavior:'smooth'});}
-  if(tab==='categories'){closeOverlay('filterOverlay');document.querySelector('.hero').scrollIntoView({behavior:'smooth',block:'start'});$('categories').scrollIntoView({behavior:'smooth',block:'center'});}
+  if(tab==='home'){document.querySelectorAll('.overlay').forEach(o=>closeOverlay(o.id));showHomeProducts();window.scrollTo({top:0,behavior:'smooth'});}
+  if(tab==='categories'){document.querySelectorAll('.overlay').forEach(o=>closeOverlay(o.id));openCategoryPage();}
   if(tab==='live')openOverlay('liveOverlay');
-  if(tab==='admin')window.location.href=ADMIN_PAGE;
+  if(tab==='orders')openOverlay('ordersOverlay');
   if(tab==='account')openOverlay('accountOverlay');
 }));
 
@@ -372,6 +463,9 @@ document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click
 }));
 
 loadProducts();
+loadStoreBanner();
+renderSocialLinks();
+loadStoreVideos();
 updateCart();
 </script>
 </body>
