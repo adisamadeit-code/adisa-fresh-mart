@@ -194,6 +194,17 @@ header{position:relative;padding:13px 16px 11px;background:linear-gradient(115de
   </section>
 </div>
 
+<div class="overlay" id="menuOverlay" role="dialog" aria-modal="true" aria-label="Menu utama">
+  <section class="sheet">
+    <div class="sheethead"><h2>Menu ADISA FRESH MART</h2><button class="close" data-close="menuOverlay">×</button></div>
+    <div style="display:grid;gap:10px">
+      <button class="secondary" data-menu-go="live">🎥 Video / Live</button>
+      <button class="secondary" data-menu-go="admin">🔐 Masuk Admin</button>
+      <button class="secondary" data-menu-go="account">👤 Akun & Informasi</button>
+    </div>
+  </section>
+</div>
+
 <div class="overlay" id="filterOverlay" role="dialog" aria-modal="true" aria-label="Pilih kategori">
   <section class="sheet">
     <div class="sheethead"><h2>Pilih Kategori</h2><button class="close" data-close="filterOverlay">×</button></div>
@@ -339,18 +350,27 @@ $('filterBtn').onclick=()=>{makeFilterChoices();openOverlay('filterOverlay')};
 $('cartTop').onclick=showCart;
 $('continueShop').onclick=()=>closeOverlay('cartOverlay');
 $('sendOrder').onclick=sendWhatsAppOrder;
-$('menuTop').onclick=()=>{makeFilterChoices();openOverlay('filterOverlay')};
+$('menuTop').onclick=()=>openOverlay('menuOverlay');
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closeOverlay(b.dataset.close));
 document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeOverlay(o.id)}));
 document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{
   const tab=b.dataset.tab;
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));
-  if(tab==='home'){closeOverlay('accountOverlay');closeOverlay('cartOverlay');closeOverlay('filterOverlay');closeOverlay('liveOverlay');window.scrollTo({top:0,behavior:'smooth'});}
-  if(tab==='categories'){makeFilterChoices();openOverlay('filterOverlay');}
+  if(tab==='home'){document.querySelectorAll('.overlay').forEach(o=>closeOverlay(o.id));window.scrollTo({top:0,behavior:'smooth'});}
+  if(tab==='categories'){closeOverlay('filterOverlay');document.querySelector('.hero').scrollIntoView({behavior:'smooth',block:'start'});$('categories').scrollIntoView({behavior:'smooth',block:'center'});}
   if(tab==='live')openOverlay('liveOverlay');
   if(tab==='admin')window.location.href=ADMIN_PAGE;
   if(tab==='account')openOverlay('accountOverlay');
 }));
+
+document.querySelectorAll('[data-menu-go]').forEach(b=>b.addEventListener('click',()=>{
+  const target=b.dataset.menuGo;
+  closeOverlay('menuOverlay');
+  if(target==='admin')window.location.href=ADMIN_PAGE;
+  if(target==='account')openOverlay('accountOverlay');
+  if(target==='live')openOverlay('liveOverlay');
+}));
+
 loadProducts();
 updateCart();
 </script>
