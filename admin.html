@@ -22,7 +22,7 @@ header{background:var(--g);color:white;padding:15px;display:flex;justify-content
  <a class="back" href="index.html">← Kembali ke Beranda</a>
 </div></section>
 <section id="app" class="hidden"><header><div><b>ADISA FRESH MART</b><small>Panel Administrasi Toko</small></div><div class="actions"><a href="index.html">Lihat Toko ↗</a><button class="btn light" onclick="logout()">Keluar</button></div></header>
-<main class="wrap"><nav class="tabs"><button class="active" onclick="tab('summary',this)">Ringkasan</button><button onclick="tab('products',this)">Kelola Produk</button><button onclick="tab('account',this)">Pengaturan Akun</button></nav>
+<main class="wrap"><nav class="tabs"><button class="active" onclick="tab('summary',this)">Ringkasan</button><button onclick="tab('products',this)">Kelola Produk</button><button onclick="tab('media',this)">Video & LIVE</button><button onclick="tab('account',this)">Pengaturan Akun</button></nav>
 <section id="summary" class="panel"><h2>Ringkasan Toko</h2><div class="stats"><div class="stat"><b id="total">0</b><small>Produk aktif</small></div><div class="stat"><b id="soldout">0</b><small>Produk habis</small></div></div><p style="font-size:12px;color:#7b847d">Produk yang disimpan di sini akan tampil di halaman toko.</p></section>
 <section id="products" class="hidden"><div class="panel"><h2 id="formTitle">Tambah Produk</h2><form id="productForm"><input type="hidden" id="pid"><div class="formgrid">
 <div class="field"><label>Nama Produk *</label><input id="nama" required></div><div class="field"><label>Kode / SKU</label><input id="sku"></div>
@@ -41,6 +41,15 @@ header{background:var(--g);color:white;padding:15px;display:flex;justify-content
 <div class="field full"><label>Foto Produk (bisa pilih beberapa foto)</label><input id="foto" type="file" accept="image/*" multiple><div id="photoPreviews" class="actions" style="margin-top:8px;flex-wrap:wrap"></div><small style="display:block;color:#7b847d;margin-top:6px">Foto pertama menjadi foto utama. Foto lama tetap dipertahankan saat mengedit jika tidak memilih foto baru.</small></div></div>
 <div class="actions"><button class="btn primary">Simpan Produk</button><button class="btn light" type="button" onclick="resetForm()">Kosongkan Form</button></div><div class="msg" id="productMsg"></div></form></div>
 <div class="panel"><h2>Daftar Produk</h2><div class="list" id="productList">Memuat produk...</div></div></section>
+<section id="media" class="hidden">
+<div class="panel"><h2>Pengaturan Tautan LIVE & Media Sosial</h2><p style="font-size:12px;color:#7b847d">Masukkan tautan akun resmi toko. Untuk LIVE, masukkan tautan profil atau siaran LIVE yang sedang aktif. Pelanggan akan diarahkan ke aplikasi/platform terkait.</p>
+<div class="formgrid"><div class="field"><label>TikTok / LIVE</label><input id="social_tiktok" type="url" placeholder="https://www.tiktok.com/@akun"></div><div class="field"><label>YouTube</label><input id="social_youtube" type="url" placeholder="https://www.youtube.com/@akun"></div><div class="field"><label>Facebook</label><input id="social_facebook" type="url" placeholder="https://www.facebook.com/akun"></div><div class="field"><label>Instagram</label><input id="social_instagram" type="url" placeholder="https://www.instagram.com/akun"></div><div class="field"><label>Threads</label><input id="social_threads" type="url" placeholder="https://www.threads.net/@akun"></div><div class="field"><label>Lemon8</label><input id="social_lemon8" type="url" placeholder="https://www.lemon8-app.com/@akun"></div></div>
+<button class="btn primary" type="button" onclick="saveSocialLinks()">Simpan Tautan Media Sosial</button><div class="msg" id="socialMsg"></div></div>
+<div class="panel"><h2>Tambah Video Produk</h2><p style="font-size:12px;color:#7b847d">Gunakan tautan video MP4 langsung yang dapat dibuka publik (bukan tautan halaman TikTok/Instagram). Thumbnail boleh dikosongkan.</p>
+<div class="field"><label>Judul Video *</label><input id="videoTitle" placeholder="Contoh: Cara menikmati kunyit asam" /></div><div class="field"><label>Nama Produk (opsional)</label><input id="videoProduct" placeholder="Contoh: Jamu Kunyit Asam" /></div><div class="field"><label>Tautan Video MP4 *</label><input id="videoUrl" type="url" placeholder="https://.../video.mp4" /></div><div class="field"><label>Tautan Foto Thumbnail (opsional)</label><input id="videoThumb" type="url" placeholder="https://.../thumbnail.jpg" /></div>
+<button class="btn primary" type="button" onclick="saveStoreVideo()">Simpan Video</button><div class="msg" id="videoMsg"></div></div>
+<div class="panel"><h2>Daftar Video Toko</h2><div id="adminVideoList" class="list">Memuat video...</div></div>
+</section>
 <section id="account" class="panel hidden"><h2>Pengaturan Akun Admin</h2><div class="field"><label>Password Baru</label><div class="pw"><input id="accountNew" type="password" placeholder="Minimal 8 karakter"><button class="eye" type="button" onclick="eye('accountNew',this)">👁️</button></div></div><div class="field"><label>Ulangi Password Baru</label><div class="pw"><input id="accountConfirm" type="password" placeholder="Ulangi password"><button class="eye" type="button" onclick="eye('accountConfirm',this)">👁️</button></div></div><button class="btn primary" onclick="changePassword()">Simpan Password Baru</button><div class="msg" id="accountMsg"></div></section>
 </main></section>
 <script>
@@ -52,9 +61,9 @@ function resetMode(on){$("loginForm").classList.toggle("hidden",on);$("resetPane
 async function forgotPassword(){let email=$("email").value.trim();if(!email)return message("loginMsg","Masukkan email admin terlebih dahulu.");message("loginMsg","Mengirim tautan pemulihan...",true);let {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname+"?reset=1"});message("loginMsg",error?error.message:"Tautan pemulihan dikirim. Periksa email admin.",!error)}
 async function saveReset(){let a=$("newPassword").value,b=$("confirmPassword").value;if(a.length<8)return message("loginMsg","Password minimal 8 karakter.");if(a!==b)return message("loginMsg","Konfirmasi password belum sama.");let {error}=await db.auth.updateUser({password:a});if(error)return message("loginMsg",error.message);message("loginMsg","Password berhasil diperbarui. Silakan masuk.",true);resetMode(false)}
 $("loginForm").addEventListener("submit",async e=>{e.preventDefault();message("loginMsg","Memeriksa akun...",true);let {data,error}=await db.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(error)return message("loginMsg","Email atau password tidak sesuai.");let {data:allowed,error:er}=await db.rpc("is_admin");if(er||!allowed){await db.auth.signOut();return message("loginMsg","Akun ini belum memiliki akses administrator.");}await openApp()});
-async function openApp(){$("loginScreen").classList.add("hidden");$("app").classList.remove("hidden");await loadProducts()}
+async function openApp(){$("loginScreen").classList.add("hidden");$("app").classList.remove("hidden");await loadProducts();await loadMediaSettings()}
 async function logout(){await db.auth.signOut();$("app").classList.add("hidden");$("loginScreen").classList.remove("hidden");$("password").value=""}
-function tab(id,b){document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");["summary","products","account"].forEach(x=>$(x).classList.toggle("hidden",x!==id))}
+function tab(id,b){document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");["summary","products","media","account"].forEach(x=>$(x).classList.toggle("hidden",x!==id));if(id==="media")loadMediaSettings()}
 function toggleStock(){$("stok").disabled=$("kelola").value!=="true"}
 function toggleCustomCategory(){const custom=$("kategori").value==="Lainnya";$("kategoriCustom").classList.toggle("hidden",!custom);if(custom)$("kategoriCustom").focus()}
 function getCategory(){return $("kategori").value==="Lainnya"?$("kategoriCustom").value.trim():$("kategori").value}
@@ -72,6 +81,49 @@ function editProduct(id){let p=products.find(x=>String(x.id)===String(id));if(!p
 async function upload(file){let ext=(file.name.split(".").pop()||"jpg").replace(/[^a-z0-9]/gi,"");let path=Date.now()+"-"+Math.random().toString(36).slice(2)+"."+ext;let {error}=await db.storage.from("foto-produk").upload(path,file,{contentType:file.type});if(error)throw error;return db.storage.from("foto-produk").getPublicUrl(path).data.publicUrl}
 $("productForm").addEventListener("submit",async e=>{e.preventDefault();message("productMsg","Menyimpan...",true);try{const files=[...$("foto").files];if(files.length){const uploaded=[];for(const file of files)uploaded.push(await upload(file));photoGallery=[...new Set([...photoGallery,...uploaded])];if(!photoUrl)photoUrl=uploaded[0]}const promo=Number($("hargaPromo").value)||null;const promoStart=$("promoMulai").value||null;const promoEnd=$("promoSelesai").value||null;if(promo!==null&&promo>=Number($("harga").value))throw new Error("Harga promo harus lebih rendah dari harga normal.");if(promoStart&&promoEnd&&promoEnd<promoStart)throw new Error("Tanggal akhir promo tidak boleh sebelum tanggal mulai.");let row={nama:$("nama").value.trim(),kode_produk:$("sku").value.trim(),kategori:getCategory(),harga:+$("harga").value,harga_promo:promo,promo_mulai:promoStart,promo_selesai:promoEnd,foto_galeri:photoGallery,satuan:getUnit()||"pcs",berat:+$("berat").value||0,jenis_penjualan:$("jenis").value,status_produk:$("status").value,kelola_stok:$("kelola").value==="true",stok:+$("stok").value||0,tersedia:$("tersedia").value==="true",estimasi_pengerjaan:$("estimasi").value.trim(),deskripsi:$("deskripsi").value.trim(),bahan:$("bahan").value.trim(),isi_produk:$("isi").value.trim(),manfaat:$("manfaat").value.trim(),waktu_konsumsi:$("waktu").value.trim(),cara_penyajian:$("penyajian").value.trim(),penyimpanan:$("penyimpanan").value.trim(),perhatian:$("perhatian").value.trim(),gambar:photoUrl};let id=$("pid").value;let r=id?await db.from("products").update(row).eq("id",id):await db.from("products").insert(row);if(r.error)throw r.error;message("productMsg","Produk berhasil disimpan.",true);resetForm();await loadProducts()}catch(err){message("productMsg","Gagal menyimpan: "+err.message)}});
 async function deleteProduct(id){if(!confirm("Hapus produk ini?"))return;let {error}=await db.from("products").delete().eq("id",id);if(error)return alert(error.message);loadProducts()}
+
+const SOCIAL_KEYS=["tiktok","youtube","facebook","instagram","threads","lemon8"];
+async function loadMediaSettings(){
+  try{
+    const {data,error}=await db.from("store_social_links").select("platform,url");
+    if(error)throw error;
+    SOCIAL_KEYS.forEach(k=>$("social_"+k).value="");
+    (data||[]).forEach(x=>{if(SOCIAL_KEYS.includes(x.platform))$("social_"+x.platform).value=x.url||""});
+  }catch(e){message("socialMsg","Pengaturan tautan belum tersedia. Jalankan SQL media terlebih dahulu.");}
+  await loadAdminVideos();
+}
+async function saveSocialLinks(){
+  message("socialMsg","Menyimpan tautan...",true);
+  try{
+    for(const platform of SOCIAL_KEYS){
+      const url=$("social_"+platform).value.trim();
+      if(url && !/^https?:\/\//i.test(url))throw new Error("Tautan "+platform+" harus diawali https://");
+      const {error}=await db.from("store_social_links").upsert({platform,url,is_active:!!url},{onConflict:"platform"});
+      if(error)throw error;
+    }
+    message("socialMsg","Tautan media sosial berhasil disimpan.",true);
+  }catch(e){message("socialMsg","Gagal menyimpan: "+e.message)}
+}
+async function saveStoreVideo(){
+  const title=$("videoTitle").value.trim(),url=$("videoUrl").value.trim();
+  if(!title||!url)return message("videoMsg","Judul dan tautan video wajib diisi.");
+  if(!/^https?:\/\//i.test(url))return message("videoMsg","Tautan video harus diawali https://");
+  message("videoMsg","Menyimpan video...",true);
+  const {error}=await db.from("store_videos").insert({title,product_name:$("videoProduct").value.trim(),video_url:url,thumbnail_url:$("videoThumb").value.trim()||null,is_active:true});
+  if(error)return message("videoMsg","Gagal menyimpan: "+error.message);
+  ["videoTitle","videoProduct","videoUrl","videoThumb"].forEach(id=>$(id).value="");
+  message("videoMsg","Video berhasil ditambahkan.",true);await loadAdminVideos();
+}
+async function loadAdminVideos(){
+  const box=$("adminVideoList");if(!box)return;box.textContent="Memuat video...";
+  const {data,error}=await db.from("store_videos").select("id,title,product_name,video_url,is_active,created_at").order("created_at",{ascending:false});
+  if(error){box.textContent="Gagal memuat video: "+error.message;return}
+  if(!data?.length){box.textContent="Belum ada video.";return}
+  box.innerHTML=data.map(v=>`<div class="item"><div class="desc"><b>${safe(v.title)}</b><small>${safe(v.product_name||"Video Produk")} · ${v.is_active?"Tampil di toko":"Disembunyikan"}</small><small style="word-break:break-all">${safe(v.video_url)}</small></div><button class="btn light" onclick="toggleStoreVideo('${safe(v.id)}',${!v.is_active})">${v.is_active?"Sembunyikan":"Tampilkan"}</button><button class="btn" style="background:#f8e9e7;color:#a33" onclick="deleteStoreVideo('${safe(v.id)}')">Hapus</button></div>`).join("");
+}
+async function toggleStoreVideo(id,active){const {error}=await db.from("store_videos").update({is_active:active}).eq("id",id);if(error)return alert(error.message);loadAdminVideos()}
+async function deleteStoreVideo(id){if(!confirm("Hapus video ini dari daftar toko?"))return;const {error}=await db.from("store_videos").delete().eq("id",id);if(error)return alert(error.message);loadAdminVideos()}
+
 async function changePassword(){let a=$("accountNew").value,b=$("accountConfirm").value;if(a.length<8)return message("accountMsg","Password minimal 8 karakter.");if(a!==b)return message("accountMsg","Konfirmasi password belum sama.");let {error}=await db.auth.updateUser({password:a});if(error)return message("accountMsg",error.message);$("accountNew").value=$("accountConfirm").value="";message("accountMsg","Password berhasil diperbarui.",true)}
 db.auth.onAuthStateChange((event)=>{if(event==="PASSWORD_RECOVERY"){resetMode(true);$("loginScreen").classList.remove("hidden");$("app").classList.add("hidden")}});
 (async()=>{let {data:{session}}=await db.auth.getSession();if(new URLSearchParams(location.search).get("reset")==="1"){resetMode(true);return}if(session){let {data:ok}=await db.rpc("is_admin");if(ok)await openApp();else await db.auth.signOut()}})();
