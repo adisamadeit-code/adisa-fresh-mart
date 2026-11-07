@@ -39,7 +39,7 @@ header{background:var(--g);color:white;padding:15px;display:flex;justify-content
 <section id="account" class="panel hidden"><h2>Pengaturan Akun Admin</h2><div class="field"><label>Password Baru</label><div class="pw"><input id="accountNew" type="password" placeholder="Minimal 8 karakter"><button class="eye" type="button" onclick="eye('accountNew',this)">👁️</button></div></div><div class="field"><label>Ulangi Password Baru</label><div class="pw"><input id="accountConfirm" type="password" placeholder="Ulangi password"><button class="eye" type="button" onclick="eye('accountConfirm',this)">👁️</button></div></div><button class="btn primary" onclick="changePassword()">Simpan Password Baru</button><div class="msg" id="accountMsg"></div></section>
 </main></section>
 <script>
-const SUPABASE_URL="https://rnprbkveecbawgmwdwxl.supabase.co",SUPABASE_KEY="sb_publishable_7o0SP7VYOFhYJ0qyDrPtzw_2VvkuiMy",db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const SUPABASE_URL="https://rnprbkveecbawgmwdwxl.supabase.co",SUPABASE_KEY="sb_publishable_uoHo7ZbKQTzqk9FUQG9SQg_CvD0K1hL",db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);let products=[],photoUrl="";
 function eye(id,b){let e=$(id);e.type=e.type==="password"?"text":"password";b.textContent=e.type==="password"?"👁️":"🙈"}
 function message(id,t,ok=false){$(id).textContent=t;$(id).style.color=ok?"#26734b":"#bd4a42"}
