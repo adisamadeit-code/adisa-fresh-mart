@@ -57,8 +57,9 @@ header{position:relative;padding:13px 16px 12px;background:linear-gradient(115de
 .result-count{font-size:11px;color:var(--muted)}
 .products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .card{border:1px solid #d8c99e;border-radius:16px;background:#fffdf7;overflow:hidden;box-shadow:var(--shadow);min-width:0;position:relative}
-.photo{height:clamp(125px,35vw,205px);background:linear-gradient(135deg,#edf3df,#d9e8d0);position:relative;overflow:hidden;display:grid;place-items:center}
-.photo img{width:100%;height:100%;object-fit:cover;display:block}
+/* Foto produk dibuat lebih tinggi dan utuh agar botol terlihat dari tutup sampai dasar. */
+.photo{height:clamp(185px,49vw,255px);background:linear-gradient(135deg,#edf3df,#d9e8d0);position:relative;overflow:hidden;display:grid;place-items:center}
+.photo img{width:100%;height:100%;object-fit:contain;object-position:center;display:block;padding:5px}
 .photo-fallback{font-size:55px;opacity:.75}
 .tag{position:absolute;bottom:8px;left:8px;border-radius:20px;padding:4px 9px;background:var(--green2);color:white;font-size:10px;font-weight:bold;box-shadow:0 2px 5px #0002}
 .photo-actions{position:absolute;inset:7px 7px auto 7px;display:flex;justify-content:space-between;align-items:flex-start;gap:0;z-index:3;pointer-events:none}
@@ -68,11 +69,12 @@ header{position:relative;padding:13px 16px 12px;background:linear-gradient(115de
 .photo-action.share{color:#21643b}
 .photo-watermark{position:absolute;right:7px;bottom:7px;z-index:2;background:#123f2bd9;color:#fff8e8;border:1px solid #c6a45b;border-radius:10px;padding:3px 6px;font-size:8px;font-weight:700;letter-spacing:.25px;pointer-events:none}
 .store-share{margin-top:12px;width:100%;border:0;border-radius:24px;background:linear-gradient(180deg,#267749,#145333);color:#fff;padding:12px;font-weight:bold;box-shadow:0 3px 7px #164b3526}
-.cardbody{padding:9px 9px 10px}
-.pname{font-weight:bold;color:#26372f;font-size:13px;line-height:1.25;min-height:32px;margin:0 0 5px}
-.price{font-weight:bold;color:var(--green);font-size:16px;margin:0 0 8px}
+.cardbody{padding:7px 8px 8px}
+/* Nama dan harga diringkas serta didekatkan ke tombol keranjang. */
+.pname{font-weight:bold;color:#26372f;font-size:11px;line-height:1.2;min-height:0;margin:0 0 3px}
+.price{font-weight:bold;color:var(--green);font-size:13px;margin:0 0 4px}
 .unit{font-size:10px;color:var(--muted);font-weight:normal}
-.addbtn{width:100%;border:0;border-radius:22px;background:linear-gradient(180deg,#267749,#145333);color:white;padding:9px 8px;font-weight:bold;box-shadow:0 3px 7px #164b3526}
+.addbtn{width:100%;border:0;border-radius:22px;background:linear-gradient(180deg,#267749,#145333);color:white;padding:7px 8px;font-size:11px;font-weight:bold;box-shadow:0 3px 7px #164b3526}
 .empty,.loading,.errorbox{grid-column:1/-1;text-align:center;padding:30px 14px;border:1px dashed #cbd8c6;border-radius:15px;color:var(--muted);background:#fbfcf6}
 .empty strong{display:block;color:var(--green);font:bold 18px Georgia;margin-bottom:5px}
 .info-strip{margin:15px 0 3px;padding:12px;border-radius:13px;background:#f2f6e9;color:#4d654f;font-size:11px;text-align:center}
@@ -80,6 +82,8 @@ header{position:relative;padding:13px 16px 12px;background:linear-gradient(115de
 .category-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
 .category-tile{border:1px solid #d9dfce;background:#fffdf7;border-radius:15px;padding:15px 10px;display:flex;align-items:center;gap:10px;text-align:left;color:var(--green);font-weight:bold;box-shadow:0 3px 10px #173f2b12}
 .category-tile .tile-icon{font-size:27px;width:38px;text-align:center}
+.cart-float{position:fixed;z-index:35;right:14px;bottom:calc(91px + env(safe-area-inset-bottom));width:47px;height:47px;border:1px solid #ffffff75;border-radius:50%;display:grid;place-items:center;background:rgba(15,91,57,.88);color:#fff;font-size:21px;box-shadow:0 4px 13px rgba(7,63,42,.28);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.cart-float-badge{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;padding:0 4px;border:2px solid #fff;border-radius:20px;background:#c93030;color:#fff;font-size:10px;display:none;place-items:center}
 .bottomnav{position:fixed;z-index:20;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,1180px);padding:7px 7px calc(7px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(5,1fr);background:#fff8e8;border-top:2px solid #c6a45b;box-shadow:0 -5px 18px #173b2528;border-radius:22px 22px 0 0}
 .tab{border:0;background:transparent;color:#4c514b;display:flex;flex-direction:column;align-items:center;gap:2px;padding:3px 0;font-size:10px;position:relative}
 .tab .ico{font-size:20px;line-height:1.2}
@@ -117,7 +121,7 @@ header{position:relative;padding:13px 16px 12px;background:linear-gradient(115de
 @media(min-width:700px){
   .content,.category-page{padding:22px}
   .products{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-  .photo{height:210px}
+  .photo{height:245px}
   .hero-banner{aspect-ratio:768/327}
   .shortcut{flex-basis:82px}
   .video-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -179,6 +183,8 @@ header{position:relative;padding:13px 16px 12px;background:linear-gradient(115de
     <button class="secondary" id="backHomeFromCategories" style="width:100%;margin-top:16px">Kembali ke Beranda</button>
   </main>
 </div>
+
+<button class="cart-float" id="cartFloat" type="button" aria-label="Buka keranjang belanja">🛒<span class="cart-float-badge" id="cartFloatBadge">0</span></button>
 
 <nav class="bottomnav" aria-label="Navigasi utama">
   <button class="tab active" data-tab="home"><span class="ico">⌂</span><span>Beranda</span></button>
@@ -465,7 +471,6 @@ function renderProducts(){
           <button class="photo-action like ${liked?'is-liked':''}" type="button" data-like="${Number(product.id)}" aria-label="Sukai produk" aria-pressed="${liked}"><svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.2 8.8c0 4.1-5.1 8-8.2 10.1C8.9 16.8 3.8 12.9 3.8 8.8A4.2 4.2 0 0 1 8 4.6c1.6 0 3 .9 4 2.1 1-1.2 2.4-2.1 4-2.1a4.2 4.2 0 0 1 4.2 4.2Z"/></svg></button>
           <button class="photo-action share" type="button" data-share-product="${Number(product.id)}" aria-label="Bagikan produk"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.5-4.4M8.2 13.2l7.5 4.4"/></svg></button>
         </div>
-        <span class="photo-watermark">ADISA FRESH MART</span>
         ${badge?`<span class="tag">${escapeHTML(badge)}</span>`:''}
       </div>
       <div class="cardbody">
@@ -549,6 +554,8 @@ function updateCart(){
   const count=cart.reduce((sum,item)=>sum+item.qty,0);
   $('cartBadge').textContent=count;
   $('cartBadge').style.display=count?'grid':'none';
+  $('cartFloatBadge').textContent=count;
+  $('cartFloatBadge').style.display=count?'grid':'none';
   $('cartTotal').textContent=rupiah(cart.reduce((sum,item)=>sum+item.price*item.qty,0));
   if(!cart.length){
     $('cartItems').innerHTML='<div class="empty"><strong>Keranjang masih kosong</strong>Yuk pilih produk segar untuk keluarga.</div>';
@@ -673,6 +680,7 @@ $('filterBtn').addEventListener('click',()=>{
   openOverlay('filterOverlay');
 });
 $('cartTop').addEventListener('click',showCart);
+$('cartFloat').addEventListener('click',showCart);
 $('menuTop').addEventListener('click',()=>openOverlay('menuOverlay'));
 $('backHomeFromCategories').addEventListener('click',showHomeProducts);
 $('continueShop').addEventListener('click',()=>closeOverlay('cartOverlay'));
