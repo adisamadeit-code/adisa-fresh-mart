@@ -1,0 +1,27 @@
+{
+  "id": "./",
+  "name": "ADISA FRESH MART",
+  "short_name": "ADISA FRESH MART",
+  "description": "Segar Pilihannya, Bahagia Keluarganya.",
+  "lang": "id-ID",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fffef8",
+  "theme_color": "#123f2b",
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
