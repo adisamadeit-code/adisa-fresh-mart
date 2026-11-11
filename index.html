@@ -229,15 +229,17 @@ header{position:relative;padding:13px 16px 12px;background:linear-gradient(115de
 <div class="overlay" id="liveOverlay" role="dialog" aria-modal="true" aria-label="Video dan Live ADISA FRESH MART">
   <section class="sheet">
     <div class="sheethead"><h2>Video & LIVE ADISA FRESH MART</h2><button class="close" data-close="liveOverlay">×</button></div>
-    <div class="media-tabs"><button class="active" data-media-tab="live">🔴 LIVE</button><button data-media-tab="videos">▶ Video Produk</button></div>
+    <div class="media-tabs"><button class="active" data-media-tab="live">🔴 ADISA LIVE</button><button data-media-tab="videos">▶ Video Produk</button></div>
     <div id="livePanel">
-      <div class="live-card"><strong><span class="live-dot"></span>LIVE & Media Sosial</strong>
-        <p class="note">Pilih akun ADISA FRESH MART untuk menonton siaran langsung atau melihat konten terbaru. Tautan dapat diatur pada bagian konfigurasi kode ini.</p>
-        <div id="liveLinks" class="social-grid"></div>
+      <div class="live-card"><strong id="customerLiveHeading"><span class="live-dot"></span> LIVE ADISA FRESH MART</strong>
+        <p class="note" id="customerLiveStatus">Memeriksa status siaran...</p>
+        <div id="customerLiveStage" style="width:100%;min-height:190px;background:#10271c;border-radius:13px;overflow:hidden;display:flex;align-items:center;justify-content:center;color:white;text-align:center;padding:12px">Siaran LIVE ADISA akan tampil di sini.</div>
+        <button class="primary" id="watchLiveBtn" type="button" style="width:100%;margin-top:10px" onclick="joinAdisaLive()">▶ TONTON LIVE SEKARANG</button>
+        <button class="secondary" id="leaveLiveBtn" type="button" style="width:100%;margin-top:8px" onclick="leaveAdisaLive()" hidden>Keluar dari LIVE</button>
       </div>
     </div>
     <div id="videoPanel" hidden><div id="storeVideos" class="video-grid"><p class="note">Video produk akan tampil setelah ditambahkan melalui pengelolaan toko.</p></div></div>
-    <p class="note" style="margin-top:12px">Siaran LIVE dilakukan melalui aplikasi masing-masing platform. Halaman ini menjadi penghubung bagi pelanggan untuk membuka akun dan menonton video produk.</p>
+    <p class="note" style="margin-top:12px">LIVE disiarkan langsung dari kamera admin ADISA FRESH MART. Pelanggan dapat menonton di halaman ini tanpa berpindah ke platform lain.</p>
   </section>
 </div>
 
@@ -270,7 +272,7 @@ header{position:relative;padding:13px 16px 12px;background:linear-gradient(115de
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
 <script>
 /* =========================================================
    KONFIGURASI ADISA FRESH MART
@@ -279,17 +281,6 @@ const SUPABASE_URL = 'https://rnprbkveecbawgmwdwxl.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_uoHo7ZbKQTzqk9FUQG9SQg_CvD0K1hL';
 const ADMIN_WA = '6281241170658'; // format internasional tanpa tanda +
 const ADMIN_PAGE = 'admin.html';
-
-/* Isi tautan akun resmi di bawah ini jika sudah siap.
-   Contoh: 'https://www.tiktok.com/@namaakun' */
-const SOCIAL_LINKS = {
-  tiktok: '',
-  youtube: '',
-  facebook: '',
-  instagram: '',
-  threads: '',
-  lemon8: ''
-};
 
 /* =========================================================
    INISIALISASI
@@ -380,59 +371,63 @@ async function loadStoreBanner(){
 }
 
 /* =========================================================
-   MEDIA SOSIAL, LIVE, DAN VIDEO PRODUK
+   ADISA LIVE INTERNAL + VIDEO PRODUK
    ========================================================= */
-function renderSocialLinks(){
-  const labels={
-    tiktok:'TikTok',youtube:'YouTube',facebook:'Facebook',
-    instagram:'Instagram',threads:'Threads',lemon8:'Lemon8'
-  };
-  const entries=Object.entries(SOCIAL_LINKS).filter(([key,url])=>
-    typeof url==='string' && url.trim() && /^https:\/\/|^http:\/\//i.test(url.trim())
-  );
-  $('liveLinks').innerHTML=entries.length
-    ? entries.map(([key,url])=>`<a class="social-link" href="${escapeHTML(url)}" target="_blank" rel="noopener">${labels[key]} ↗</a>`).join('')
-    : '<p class="note" style="grid-column:1/-1">Tautan akun media sosial belum dipasang. Tambahkan tautan akun resmi pada bagian SOCIAL_LINKS di kode toko.</p>';
-}
+let customerLiveRoom=null,liveStatusTimer=null;
 async function loadStoreVideos(){
   try{
-    const {data,error}=await supabaseClient.from('store_videos')
-      .select('title,video_url,thumbnail_url,product_name')
-      .eq('is_active',true)
-      .order('created_at',{ascending:false});
-    if(error){
-      console.info('Tabel video belum tersedia atau belum dapat dibaca.');
-      $('storeVideos').innerHTML='<p class="note" style="grid-column:1/-1">Video belum tersedia. Admin dapat menambahkan video setelah tabel store_videos dan izin aksesnya disiapkan.</p>';
-      return;
-    }
-    if(!data || !data.length){
-      $('storeVideos').innerHTML='<p class="note" style="grid-column:1/-1">Belum ada video produk. Video akan muncul di sini setelah admin menambahkannya.</p>';
-      return;
-    }
-    $('storeVideos').innerHTML=data.map(video=>{
-      const url=escapeHTML(video.video_url||'');
-      const poster=escapeHTML(video.thumbnail_url||'');
-      const title=escapeHTML(video.title||video.product_name||'Video Produk');
-      return `<article class="video-card">
-        <video controls playsinline preload="metadata" ${poster?`poster="${poster}"`:''}>
-          <source src="${url}">
-          Browser tidak mendukung pemutar video.
-        </video>
-        <div class="video-caption">${title}</div>
-      </article>`;
+    const {data,error}=await supabaseClient.from('store_videos').select('title,video_url,thumbnail_url,product_name').eq('is_active',true).order('created_at',{ascending:false});
+    if(error)throw error;
+    if(!data?.length){$('storeVideos').innerHTML='<p class="note" style="grid-column:1/-1">Belum ada video produk. Admin dapat menambahkan video melalui dashboard.</p>';return;}
+    $('storeVideos').innerHTML=data.map(v=>{
+      const url=escapeHTML(v.video_url||''),poster=escapeHTML(v.thumbnail_url||''),title=escapeHTML(v.title||v.product_name||'Video Produk');
+      return `<article class="video-card"><video controls playsinline preload="metadata" ${poster?`poster="${poster}"`:''}><source src="${url}">Browser tidak mendukung pemutar video.</video><div class="video-caption">${title}</div></article>`;
     }).join('');
-  }catch(error){
-    $('storeVideos').innerHTML='<p class="note" style="grid-column:1/-1">Video produk belum dapat dimuat.</p>';
-  }
+  }catch(e){$('storeVideos').innerHTML='<p class="note" style="grid-column:1/-1">Video produk belum dapat dimuat. Periksa pengaturan video toko.</p>';}
 }
-document.querySelectorAll('[data-media-tab]').forEach(button=>{
-  button.addEventListener('click',()=>{
-    document.querySelectorAll('[data-media-tab]').forEach(item=>item.classList.toggle('active',item===button));
-    const showLive=button.dataset.mediaTab==='live';
-    $('livePanel').hidden=!showLive;
-    $('videoPanel').hidden=showLive;
-  });
-});
+async function refreshAdisaLiveStatus(){
+  const {data,error}=await supabaseClient.from('live_sessions').select('title,is_live').eq('id',1).maybeSingle();
+  if(error){$('customerLiveStatus').textContent='Fitur LIVE sedang disiapkan.';$('watchLiveBtn').disabled=true;return false;}
+  if(data?.is_live){
+    $('customerLiveHeading').innerHTML='<span class="live-dot"></span> 🔴 '+escapeHTML(data.title||'ADISA SEDANG LIVE');
+    $('customerLiveStatus').textContent='ADISA sedang siaran langsung. Tekan tombol di bawah untuk menonton.';
+    $('watchLiveBtn').disabled=false;return true;
+  }
+  $('customerLiveHeading').textContent='ADISA FRESH MART';
+  $('customerLiveStatus').textContent='Saat ini ADISA belum sedang LIVE. Silakan kembali saat siaran dimulai.';
+  $('watchLiveBtn').disabled=true;
+  if(customerLiveRoom)await leaveAdisaLive();
+  return false;
+}
+async function joinAdisaLive(){
+  if(!window.LivekitClient){$('customerLiveStatus').textContent='Pemutar LIVE belum termuat. Periksa koneksi internet.';return;}
+  $('watchLiveBtn').disabled=true;$('customerLiveStatus').textContent='Menghubungkan ke siaran ADISA...';
+  try{
+    const {data,error}=await supabaseClient.functions.invoke('live-token',{body:{role:'viewer'}});
+    if(error)throw new Error(error.message||'Tidak dapat terhubung.');
+    if(data?.error)throw new Error(data.error);
+    customerLiveRoom=new LivekitClient.Room({adaptiveStream:true,dynacast:true});
+    const stage=$('customerLiveStage');stage.innerHTML='';
+    const attachTrack=(track)=>{const el=track.attach();el.style.width='100%';el.style.height='auto';el.style.maxHeight='65vh';el.style.objectFit='contain';stage.appendChild(el);};
+    customerLiveRoom.on(LivekitClient.RoomEvent.TrackSubscribed,(track)=>attachTrack(track));
+    customerLiveRoom.on(LivekitClient.RoomEvent.Disconnected,()=>{stage.textContent='Siaran telah berakhir.';$('leaveLiveBtn').hidden=true;$('watchLiveBtn').hidden=false;customerLiveRoom=null;});
+    await customerLiveRoom.connect(data.serverUrl,data.participantToken);
+    customerLiveRoom.remoteParticipants.forEach(participant=>participant.trackPublications.forEach(pub=>{if(pub.track)attachTrack(pub.track)}));
+    $('watchLiveBtn').hidden=true;$('leaveLiveBtn').hidden=false;
+    $('customerLiveStatus').textContent='Terhubung ke LIVE ADISA FRESH MART.';
+    if(!liveStatusTimer)liveStatusTimer=setInterval(refreshAdisaLiveStatus,15000);
+  }catch(e){$('customerLiveStatus').textContent='Belum dapat menonton: '+(e.message||e);$('watchLiveBtn').disabled=false;$('customerLiveStage').textContent='Silakan coba kembali.';}
+}
+async function leaveAdisaLive(){
+  if(customerLiveRoom){try{await customerLiveRoom.disconnect()}catch(_){ }customerLiveRoom=null;}
+  $('customerLiveStage').textContent='Kamu telah keluar dari siaran LIVE.';$('leaveLiveBtn').hidden=true;$('watchLiveBtn').hidden=false;
+  if(liveStatusTimer){clearInterval(liveStatusTimer);liveStatusTimer=null;}
+}
+document.querySelectorAll('[data-media-tab]').forEach(button=>button.addEventListener('click',()=>{
+  document.querySelectorAll('[data-media-tab]').forEach(item=>item.classList.toggle('active',item===button));
+  const showLive=button.dataset.mediaTab==='live';$('livePanel').hidden=!showLive;$('videoPanel').hidden=showLive;
+  if(showLive)refreshAdisaLiveStatus();
+}));
 
 /* =========================================================
    PRODUK DARI SUPABASE
@@ -682,14 +677,17 @@ function sendWhatsAppOrder(){
    ========================================================= */
 function openOverlay(id){
   $(id).classList.add('show');
+  if(id==='liveOverlay')refreshAdisaLiveStatus();
   document.body.style.overflow='hidden';
 }
 function closeOverlay(id){
   $(id).classList.remove('show');
+  if(id==='liveOverlay')leaveAdisaLive();
   if(!document.querySelector('.overlay.show'))document.body.style.overflow='';
 }
 function closeAllOverlays(){
   document.querySelectorAll('.overlay.show').forEach(overlay=>overlay.classList.remove('show'));
+  leaveAdisaLive();
   document.body.style.overflow='';
 }
 function showHomeProducts(){
@@ -818,7 +816,6 @@ document.addEventListener('keydown',event=>{
 /* =========================================================
    MULAI TOKO
    ========================================================= */
-renderSocialLinks();
 updateCart();
 loadProducts();
 loadStoreBanner();
