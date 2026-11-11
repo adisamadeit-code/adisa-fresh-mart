@@ -122,7 +122,7 @@ async function deleteProduct(id){if(!confirm("Hapus produk ini?"))return;let {er
 
 let adminLiveRoom=null;
 async function mediaToken(role){
-  const {data,error}=await db.functions.invoke('livekit-token',{body:{role}});
+  const {data,error}=await db.functions.invoke('live-token',{body:{role}});
   if(error)throw new Error(error.message||'Gagal meminta token LIVE.');
   if(data?.error)throw new Error(data.error);
   return data;
@@ -198,7 +198,20 @@ async function loadAdminVideos(){
   const {data,error}=await db.from('store_videos').select('id,title,product_name,video_url,is_active,created_at').order('created_at',{ascending:false});
   if(error){box.textContent='Gagal memuat video: '+error.message;return}
   if(!data?.length){box.textContent='Belum ada video.';return}
-  box.innerHTML=data.map(v=>`<div class="item"><div class="desc"><b>${safe(v.title)}</b><small>${safe(v.product_name||'Video Produk')} · ${v.is_active?'Tampil di toko':'Disembunyikan'}</small></div><button class="btn light" onclick="toggleStoreVideo('${safe(v.id)}',${!v.is_active})">${v.is_active?'Sembunyikan':'Tampilkan'}</button><button class="btn" style="background:#f8e9e7;color:#a33" onclick="deleteStoreVideo('${safe(v.id)}')">Hapus</button></div>`).join('');
+  box.innerHTML=data.map(v=>`<div class="item"><div class="desc"><b>${safe(v.title)}</b><small>${safe(v.product_name||'Video Produk')} · ${v.is_active?'Tampil di toko':'Disembunyikan'}</small></div><button class="btn light" onclick="editStoreVideo('${safe(v.id)}')">Edit</button><button class="btn light" onclick="toggleStoreVideo('${safe(v.id)}',${!v.is_active})">${v.is_active?'Sembunyikan':'Tampilkan'}</button><button class="btn" style="background:#f8e9e7;color:#a33" onclick="deleteStoreVideo('${safe(v.id)}')">Hapus</button></div>`).join('');
+}
+async function editStoreVideo(id){
+  const {data,error}=await db.from('store_videos').select('title,product_name').eq('id',id).single();
+  if(error)return alert('Gagal membuka data video: '+error.message);
+  const title=prompt('Edit judul video:',data.title||'');
+  if(title===null)return;
+  const product=prompt('Edit nama produk (boleh dikosongkan):',data.product_name||'');
+  if(product===null)return;
+  if(!title.trim())return alert('Judul video tidak boleh kosong.');
+  const {error:updateError}=await db.from('store_videos').update({title:title.trim(),product_name:product.trim()||null}).eq('id',id);
+  if(updateError)return alert('Gagal menyimpan perubahan: '+updateError.message);
+  alert('Tulisan video berhasil diperbarui.');
+  await loadAdminVideos();
 }
 async function toggleStoreVideo(id,active){const {error}=await db.from('store_videos').update({is_active:active}).eq('id',id);if(error)return alert(error.message);loadAdminVideos()}
 async function deleteStoreVideo(id){if(!confirm('Hapus video ini dari daftar toko?'))return;const {error}=await db.from('store_videos').delete().eq('id',id);if(error)return alert(error.message);loadAdminVideos()}
