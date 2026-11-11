@@ -122,10 +122,23 @@ async function deleteProduct(id){if(!confirm("Hapus produk ini?"))return;let {er
 
 let adminLiveRoom=null;
 async function mediaToken(role){
-  const {data,error}=await db.functions.invoke('live-token',{body:{role}});
-  if(error)throw new Error(error.message||'Gagal meminta token LIVE.');
-  if(data?.error)throw new Error(data.error);
-  return data;
+  // Coba nama fungsi utama terlebih dahulu. Jika fungsi itu tidak ditemukan,
+  // coba nama alternatif yang pernah dipakai pada proyek ADISA.
+  let result=await db.functions.invoke('live-token',{body:{role}});
+  if(result.error){
+    const firstError=result.error;
+    const msg=String(firstError.message||firstError);
+    const notFound=firstError.status===404 || /not found|function.*does not exist|could not find the function/i.test(msg);
+    if(!notFound)throw new Error(msg||'Gagal meminta token LIVE.');
+    result=await db.functions.invoke('livekit-token',{body:{role}});
+    if(result.error){
+      const secondError=result.error;
+      throw new Error('Fungsi token LIVE tidak ditemukan dengan nama live-token maupun livekit-token. Detail: '+(secondError.message||secondError));
+    }
+  }
+  if(result.data?.error)throw new Error(result.data.error);
+  if(!result.data?.serverUrl||!result.data?.participantToken)throw new Error('Respons token LIVE tidak lengkap. Periksa Edge Function dan konfigurasi LiveKit.');
+  return result.data;
 }
 async function loadMediaSettings(){await loadAdminVideos();await loadAdminLiveStatus()}
 async function loadAdminLiveStatus(){
