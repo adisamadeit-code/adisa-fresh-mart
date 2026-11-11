@@ -155,7 +155,8 @@ header{position:relative;padding:13px 16px 12px;background:linear-gradient(115de
     <button class="filterbtn" id="filterBtn" aria-label="Pilih kategori">☷</button>
   </div>
 
-  <div class="category-shortcuts" aria-label="Kategori pilihan">
+  <div class="category-shortcuts" id="categoryShortcuts" aria-label="Kategori pilihan">
+    <button class="shortcut" data-shortcut=""><span class="symbol">🌿</span>Semua Produk</button>
     <button class="shortcut" data-shortcut="Jamu & Herbal"><span class="symbol">🍹</span>Jamu Herbal</button>
     <button class="shortcut" data-shortcut="Kerupuk & Camilan"><span class="symbol">🥨</span>Camilan</button>
     <button class="shortcut" data-shortcut="Frozen Food"><span class="symbol">🧊</span>Frozen Food</button>
@@ -318,11 +319,36 @@ const categoryIcons = {
   'Sembako':'🛍️',
   'Lainnya':'🌿'
 };
-const categoryList = [
+let categoryList = [
   'Jamu & Herbal','Kerupuk & Camilan','Frozen Food','Sayuran Segar',
-  'Ayam & Protein','Bumbu Dapur','Kemasan Makanan','Kemasan Minuman',
-  'Perlengkapan Makanan','Roti & Kue','Paket Hemat','Sembako','Lainnya'
+  'Ayam & Protein','Bumbu Dapur & Rempah','Kemasan Makanan','Kemasan Minuman',
+  'Perlengkapan Makanan','Roti & Kue','Paket Hemat','Sembako & Bahan Pokok',
+  'Lauk Mentah Berbumbu','Makanan Siap Saji','Buah Segar','Lainnya'
 ];
+const DEFAULT_CATEGORY_ICONS = {
+  'Jamu & Herbal':'🍹','Kerupuk & Camilan':'🥨','Frozen Food':'🧊','Sayuran Segar':'🥬',
+  'Ayam & Protein':'🍗','Bumbu Dapur & Rempah':'🧄','Kemasan Makanan':'🥡',
+  'Kemasan Minuman':'🥤','Perlengkapan Makanan':'🍴','Roti & Kue':'🥐',
+  'Paket Hemat':'🧺','Sembako & Bahan Pokok':'🛍️','Lauk Mentah Berbumbu':'🍖',
+  'Makanan Siap Saji':'🍱','Buah Segar':'🍎','Lainnya':'🌿'
+};
+function normCategory(value){
+  const s=String(value||'').toLocaleLowerCase('id-ID').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+  if(!s)return '';
+  if(/jamu|herbal|minuman tradisional/.test(s))return 'jamu herbal';
+  if(/kerupuk|krupuk|camilan|snack/.test(s))return 'camilan';
+  if(/frozen|beku/.test(s))return 'frozen food';
+  if(/sayur|sayuran/.test(s))return 'sayur segar';
+  if(/kemasan|thinwall|plastik makanan/.test(s))return 'kemasan';
+  if(/paket|bundling|hemat/.test(s))return 'paket hemat';
+  if(/bumbu|rempah/.test(s))return 'bumbu dapur';
+  if(/sembako|bahan pokok/.test(s))return 'sembako';
+  if(/ayam|protein|daging unggas/.test(s))return 'ayam protein';
+  if(/lauk mentah|ungkep|marinasi/.test(s))return 'lauk mentah';
+  if(/siap saji|makanan matang/.test(s))return 'makanan siap saji';
+  if(/buah/.test(s))return 'buah segar';
+  return s;
+}
 const rupiah = n => 'Rp ' + Number(n || 0).toLocaleString('id-ID');
 const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, c => ({
   '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
@@ -333,7 +359,7 @@ function notify(message){
   clearTimeout(toastTimer);
   toastTimer = setTimeout(()=>$('toast').classList.remove('show'),2400);
 }
-function productIcon(category){ return categoryIcons[category] || '🌿'; }
+function productIcon(category){ return categoryIcons[category] || DEFAULT_CATEGORY_ICONS[category] || '🌿'; }
 function visibleProduct(product){ return product.status_produk === 'aktif'; }
 
 /* =========================================================
@@ -414,6 +440,31 @@ document.querySelectorAll('[data-media-tab]').forEach(button=>{
    kode_produk, gambar, harga, satuan, status_produk,
    label_promo, jenis_penjualan, created_at
    ========================================================= */
+async function loadStoreCategories(){
+  try{
+    const {data,error}=await supabaseClient.from('product_categories').select('name,icon,sort_order').eq('is_active',true).order('sort_order',{ascending:true}).order('name',{ascending:true});
+    if(error) throw error;
+    if(data && data.length){
+      categoryList=data.map(x=>x.name);
+      data.forEach(x=>{if(x.icon)categoryIcons[x.name]=x.icon;});
+    }
+  }catch(error){
+    console.info('Kategori dinamis belum tersedia; memakai kategori bawaan.',error.message||error);
+  }
+  // Tambahkan kategori lama yang sudah dipakai pada produk agar tidak hilang dari navigasi.
+  const seen=new Set(categoryList.map(normCategory));
+  allProducts.forEach(p=>{const name=String(p.kategori||'').trim();if(name&&!seen.has(normCategory(name))){categoryList.push(name);seen.add(normCategory(name));}});
+  renderCategoryShortcuts();
+}
+function renderCategoryShortcuts(){
+  const host=$('categoryShortcuts'); if(!host)return;
+  const preferred=['Jamu & Herbal','Kerupuk & Camilan','Frozen Food','Sayuran Segar','Kemasan Makanan','Paket Hemat'];
+  const list=[...preferred.filter(x=>categoryList.some(c=>normCategory(c)===normCategory(x))),...categoryList.filter(x=>!preferred.some(p=>normCategory(p)===normCategory(x)))];
+  const labels={'Jamu & Herbal':'Jamu Herbal','Kerupuk & Camilan':'Camilan','Sayuran Segar':'Sayur Segar','Kemasan Makanan':'Kemasan'};
+  const entries=[{name:'',label:'Semua Produk',icon:'🌿'},...list.map(name=>({name,label:labels[name]||name,icon:productIcon(name)}))];
+  host.innerHTML=entries.map(x=>`<button class="shortcut" type="button" data-shortcut="${escapeHTML(x.name)}"><span class="symbol">${x.icon}</span>${escapeHTML(x.label)}</button>`).join('');
+  host.querySelectorAll('[data-shortcut]').forEach(b=>b.addEventListener('click',()=>selectCategory(b.dataset.shortcut)));
+}
 async function loadProducts(){
   $('products').innerHTML='<div class="loading">Memuat produk toko...</div>';
   try{
@@ -423,6 +474,7 @@ async function loadProducts(){
       .order('created_at',{ascending:false});
     if(error) throw error;
     allProducts=(data||[]).filter(visibleProduct);
+    await loadStoreCategories();
     renderProducts();
   }catch(error){
     console.error('Gagal memuat katalog:',error);
@@ -441,14 +493,29 @@ function productMatchesQuickMode(product){
   // Produk baru mengikuti urutan created_at terbaru dari Supabase.
   return true;
 }
+function categorySearchAliases(value){
+  const key=normCategory(value);
+  const aliases={
+    'jamu herbal':'jamu herbal jamu minuman herbal minuman tradisional kunyit asam beras kencur',
+    'camilan':'camilan kerupuk krupuk snack makanan ringan',
+    'frozen food':'frozen food makanan beku',
+    'sayur segar':'sayur segar sayuran sayuran segar',
+    'kemasan':'kemasan kemasan makanan kemasan minuman thinwall wadah',
+    'paket hemat':'paket hemat paket bundling'
+  };
+  return aliases[key]||'';
+}
 function renderProducts(){
   const query=$('search').value.trim().toLowerCase();
   let filtered=allProducts.filter(product=>{
     const category=product.kategori||'Lainnya';
-    const searchable=[product.nama,product.kategori,product.deskripsi,product.kode_produk].join(' ').toLowerCase();
-    return (!activeCategory || category===activeCategory) &&
-      (!query || searchable.includes(query)) &&
-      productMatchesQuickMode(product);
+    const categoryMatch=!activeCategory || normCategory(category)===normCategory(activeCategory);
+    const searchable=[product.nama,product.kategori,product.deskripsi,product.kode_produk,
+      product.bahan,product.isi_produk,product.manfaat,product.cara_penyajian,
+      product.perhatian,product.kata_kunci,categorySearchAliases(product.kategori)].join(' ').toLocaleLowerCase('id-ID');
+    const terms=query.split(/\s+/).filter(Boolean);
+    const searchMatch=!query || terms.every(term=>searchable.includes(term));
+    return categoryMatch && searchMatch && productMatchesQuickMode(product);
   });
   if(quickMode==='new') filtered=filtered.slice(0,12);
   $('listTitle').textContent=activeCategory || (query?'Hasil Pencarian':
@@ -729,8 +796,7 @@ document.querySelectorAll('[data-tab]').forEach(button=>{
       item.classList.toggle('active',item===button));
   });
 });
-document.querySelectorAll('[data-shortcut]').forEach(button=>
-  button.addEventListener('click',()=>selectCategory(button.dataset.shortcut)));
+document.querySelectorAll('[data-shortcut]').forEach(button=>button.addEventListener('click',()=>selectCategory(button.dataset.shortcut)));
 document.querySelectorAll('[data-quick]').forEach(button=>{
   button.addEventListener('click',()=>{
     quickMode=button.dataset.quick;
