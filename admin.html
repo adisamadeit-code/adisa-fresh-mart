@@ -122,23 +122,23 @@ async function deleteProduct(id){if(!confirm("Hapus produk ini?"))return;let {er
 
 let adminLiveRoom=null;
 async function mediaToken(role){
-  // Coba nama fungsi utama terlebih dahulu. Jika fungsi itu tidak ditemukan,
-  // coba nama alternatif yang pernah dipakai pada proyek ADISA.
-  let result=await db.functions.invoke('live-token',{body:{role}});
-  if(result.error){
-    const firstError=result.error;
-    const msg=String(firstError.message||firstError);
-    const notFound=firstError.status===404 || /not found|function.*does not exist|could not find the function/i.test(msg);
-    if(!notFound)throw new Error(msg||'Gagal meminta token LIVE.');
-    result=await db.functions.invoke('livekit-token',{body:{role}});
-    if(result.error){
-      const secondError=result.error;
-      throw new Error('Fungsi token LIVE tidak ditemukan dengan nama live-token maupun livekit-token. Detail: '+(secondError.message||secondError));
-    }
+  // Nama fungsi harus sama persis dengan Edge Function di Supabase.
+  const {data,error}=await db.functions.invoke('livekit-token',{body:{role}});
+  if(error){
+    let detail=error.message||'Permintaan ke Edge Function gagal.';
+    try{
+      if(error.context && typeof error.context.clone==='function'){
+        const bodyText=await error.context.clone().text();
+        if(bodyText)detail+=' — '+bodyText;
+      }
+    }catch(_){}
+    throw new Error(detail);
   }
-  if(result.data?.error)throw new Error(result.data.error);
-  if(!result.data?.serverUrl||!result.data?.participantToken)throw new Error('Respons token LIVE tidak lengkap. Periksa Edge Function dan konfigurasi LiveKit.');
-  return result.data;
+  if(data?.error)throw new Error(data.error);
+  if(!data?.serverUrl || !data?.participantToken){
+    throw new Error('Token LIVE tidak lengkap. Periksa respons Edge Function livekit-token.');
+  }
+  return data;
 }
 async function loadMediaSettings(){await loadAdminVideos();await loadAdminLiveStatus()}
 async function loadAdminLiveStatus(){
@@ -152,7 +152,7 @@ async function loadAdminLiveStatus(){
 }
 async function startAdisaLive(){
   if(!window.LivekitClient)return message('liveMsg','Komponen LIVE belum termuat. Periksa koneksi internet lalu muat ulang.');
-  $('startLiveBtn').disabled=true;message('liveMsg','Menyiapkan siaran dan meminta izin kamera/mikrofon...',true);
+  $('startLiveBtn').disabled=true;message('liveMsg','Menghubungi livekit-token, menyiapkan siaran dan meminta izin kamera/mikrofon...',true);
   try{
     const title=$('liveTitle').value.trim()||'LIVE ADISA FRESH MART';
     const {error:updateError}=await db.from('live_sessions').update({title,is_live:true,updated_at:new Date().toISOString()}).eq('id',1);
@@ -211,20 +211,7 @@ async function loadAdminVideos(){
   const {data,error}=await db.from('store_videos').select('id,title,product_name,video_url,is_active,created_at').order('created_at',{ascending:false});
   if(error){box.textContent='Gagal memuat video: '+error.message;return}
   if(!data?.length){box.textContent='Belum ada video.';return}
-  box.innerHTML=data.map(v=>`<div class="item"><div class="desc"><b>${safe(v.title)}</b><small>${safe(v.product_name||'Video Produk')} · ${v.is_active?'Tampil di toko':'Disembunyikan'}</small></div><button class="btn light" onclick="editStoreVideo('${safe(v.id)}')">Edit</button><button class="btn light" onclick="toggleStoreVideo('${safe(v.id)}',${!v.is_active})">${v.is_active?'Sembunyikan':'Tampilkan'}</button><button class="btn" style="background:#f8e9e7;color:#a33" onclick="deleteStoreVideo('${safe(v.id)}')">Hapus</button></div>`).join('');
-}
-async function editStoreVideo(id){
-  const {data,error}=await db.from('store_videos').select('title,product_name').eq('id',id).single();
-  if(error)return alert('Gagal membuka data video: '+error.message);
-  const title=prompt('Edit judul video:',data.title||'');
-  if(title===null)return;
-  const product=prompt('Edit nama produk (boleh dikosongkan):',data.product_name||'');
-  if(product===null)return;
-  if(!title.trim())return alert('Judul video tidak boleh kosong.');
-  const {error:updateError}=await db.from('store_videos').update({title:title.trim(),product_name:product.trim()||null}).eq('id',id);
-  if(updateError)return alert('Gagal menyimpan perubahan: '+updateError.message);
-  alert('Tulisan video berhasil diperbarui.');
-  await loadAdminVideos();
+  box.innerHTML=data.map(v=>`<div class="item"><div class="desc"><b>${safe(v.title)}</b><small>${safe(v.product_name||'Video Produk')} · ${v.is_active?'Tampil di toko':'Disembunyikan'}</small></div><button class="btn light" onclick="toggleStoreVideo('${safe(v.id)}',${!v.is_active})">${v.is_active?'Sembunyikan':'Tampilkan'}</button><button class="btn" style="background:#f8e9e7;color:#a33" onclick="deleteStoreVideo('${safe(v.id)}')">Hapus</button></div>`).join('');
 }
 async function toggleStoreVideo(id,active){const {error}=await db.from('store_videos').update({is_active:active}).eq('id',id);if(error)return alert(error.message);loadAdminVideos()}
 async function deleteStoreVideo(id){if(!confirm('Hapus video ini dari daftar toko?'))return;const {error}=await db.from('store_videos').delete().eq('id',id);if(error)return alert(error.message);loadAdminVideos()}
