@@ -404,11 +404,27 @@ async function joinAdisaLive(){
   $('watchLiveBtn').disabled=true;$('customerLiveStatus').textContent='Menghubungkan ke siaran ADISA...';
   try{
     const {data,error}=await supabaseClient.functions.invoke('live-token',{body:{role:'viewer'}});
-    if(error)throw new Error(error.message||'Tidak dapat terhubung.');
+    if(error){
+      let detail=error.message||'Permintaan token penonton gagal.';
+      try{
+        if(error.context && typeof error.context.clone==='function'){
+          const bodyText=await error.context.clone().text();
+          if(bodyText)detail+=' — '+bodyText;
+        }
+      }catch(_){}
+      throw new Error(detail);
+    }
     if(data?.error)throw new Error(data.error);
+    if(!data?.serverUrl || !data?.participantToken)throw new Error('Token penonton tidak lengkap dari Edge Function live-token.');
     customerLiveRoom=new LivekitClient.Room({adaptiveStream:true,dynacast:true});
     const stage=$('customerLiveStage');stage.innerHTML='';
-    const attachTrack=(track)=>{const el=track.attach();el.style.width='100%';el.style.height='auto';el.style.maxHeight='65vh';el.style.objectFit='contain';stage.appendChild(el);};
+    const attachTrack=(track)=>{
+      const el=track.attach();
+      el.autoplay=true;el.playsInline=true;el.style.display='block';
+      el.style.width='100%';el.style.height='auto';el.style.maxHeight='65vh';
+      el.style.objectFit='contain';stage.appendChild(el);
+      if(el.tagName==='VIDEO')el.play().catch(()=>{});
+    };
     customerLiveRoom.on(LivekitClient.RoomEvent.TrackSubscribed,(track)=>attachTrack(track));
     customerLiveRoom.on(LivekitClient.RoomEvent.Disconnected,()=>{stage.textContent='Siaran telah berakhir.';$('leaveLiveBtn').hidden=true;$('watchLiveBtn').hidden=false;customerLiveRoom=null;});
     await customerLiveRoom.connect(data.serverUrl,data.participantToken);
