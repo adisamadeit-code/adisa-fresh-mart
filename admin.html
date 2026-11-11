@@ -68,6 +68,11 @@ header{background:var(--g);color:white;padding:15px;display:flex;justify-content
 <div class="field"><label>Foto Thumbnail (opsional)</label><input id="videoThumbFile" type="file" accept="image/jpeg,image/png,image/webp"></div>
 <button class="btn primary" type="button" onclick="saveStoreVideo()">⬆ Unggah & Tampilkan Video</button><div class="msg" id="videoMsg"></div></div>
 <div class="panel"><h2>Daftar Video Toko</h2><div id="adminVideoList" class="list">Memuat video...</div></div>
+<div class="panel"><h2>🛡️ Moderasi Komentar Video & LIVE</h2><p class="hint">Komentar pelanggan dapat dikirim tanpa akun. Kata terlarang akan disaring otomatis. Admin dapat mengelola kata dan memblokir pengunjung.</p>
+<div class="field"><label>Tambah kata/frasa terlarang</label><div class="actions"><input id="blockedWordInput" maxlength="60" placeholder="Masukkan kata atau frasa" style="flex:1"><button class="btn primary" type="button" onclick="addBlockedWord()">Tambah</button></div></div>
+<div id="blockedWordList" class="list">Memuat daftar kata...</div><div class="msg" id="moderationMsg"></div>
+<h3 style="margin-top:18px">Pengunjung yang diblokir</h3><div id="blockedVisitorList" class="list">Memuat daftar blokir...</div>
+<h3 style="margin-top:18px">Komentar terbaru</h3><div id="moderationComments" class="list">Memuat komentar...</div></div>
 </section>
 <section id="account" class="panel hidden"><h2>Pengaturan Akun Admin</h2><div class="field"><label>Password Baru</label><div class="pw"><input id="accountNew" type="password" placeholder="Minimal 8 karakter"><button class="eye" type="button" onclick="eye('accountNew',this)">👁️</button></div></div><div class="field"><label>Ulangi Password Baru</label><div class="pw"><input id="accountConfirm" type="password" placeholder="Ulangi password"><button class="eye" type="button" onclick="eye('accountConfirm',this)">👁️</button></div></div><button class="btn primary" onclick="changePassword()">Simpan Password Baru</button><div class="msg" id="accountMsg"></div></section>
 </main></section>
@@ -123,7 +128,7 @@ async function deleteProduct(id){if(!confirm("Hapus produk ini?"))return;let {er
 let adminLiveRoom=null;
 async function mediaToken(role){
   // Nama fungsi harus sama persis dengan Edge Function di Supabase.
-  const {data,error}=await db.functions.invoke('live-token',{body:{role}});
+  const {data,error}=await db.functions.invoke('livekit-token',{body:{role}});
   if(error){
     let detail=error.message||'Permintaan ke Edge Function gagal.';
     try{
@@ -136,11 +141,11 @@ async function mediaToken(role){
   }
   if(data?.error)throw new Error(data.error);
   if(!data?.serverUrl || !data?.participantToken){
-    throw new Error('Token LIVE tidak lengkap. Periksa Edge Function live-token di Supabase.');
+    throw new Error('Token LIVE tidak lengkap. Periksa Edge Function livekit-token di Supabase.');
   }
   return data;
 }
-async function loadMediaSettings(){await loadAdminVideos();await loadAdminLiveStatus()}
+async function loadMediaSettings(){await loadAdminVideos();await loadAdminLiveStatus();await loadModeration()}
 async function loadAdminLiveStatus(){
   const {data,error}=await db.from('live_sessions').select('title,is_live').eq('id',1).maybeSingle();
   if(error){message('liveMsg','Jalankan setup_video_live_supabase.sql terlebih dahulu.');return}
@@ -152,7 +157,7 @@ async function loadAdminLiveStatus(){
 }
 async function startAdisaLive(){
   if(!window.LivekitClient)return message('liveMsg','Komponen LIVE belum termuat. Periksa koneksi internet lalu muat ulang.');
-  $('startLiveBtn').disabled=true;message('liveMsg','Menghubungi live-token, menyiapkan siaran dan meminta izin kamera/mikrofon...',true);
+  $('startLiveBtn').disabled=true;message('liveMsg','Menghubungi livekit-token, menyiapkan siaran dan meminta izin kamera/mikrofon...',true);
   try{
     const title=$('liveTitle').value.trim()||'LIVE ADISA FRESH MART';
     const {error:updateError}=await db.from('live_sessions').update({title,is_live:true,updated_at:new Date().toISOString()}).eq('id',1);
@@ -232,6 +237,21 @@ async function editStoreVideo(id){
 async function toggleStoreVideo(id,active){const {error}=await db.from('store_videos').update({is_active:active}).eq('id',id);if(error)return alert(error.message);loadAdminVideos()}
 async function deleteStoreVideo(id){if(!confirm('Hapus video ini dari daftar toko?'))return;const {error}=await db.from('store_videos').delete().eq('id',id);if(error)return alert(error.message);loadAdminVideos()}
 
+async function loadModeration(){
+  const words=$('blockedWordList'),comments=$('moderationComments'),visitors=$('blockedVisitorList');if(!words||!comments)return;
+  const w=await db.from('adisa_blocked_words').select('id,word,is_active').order('word');
+  words.innerHTML=w.error?'Gagal memuat kata terlarang: '+safe(w.error.message):(!w.data?.length?'Belum ada kata terlarang.':w.data.map(x=>`<div class="item"><div class="desc"><b>${safe(x.word)}</b><small>${x.is_active?'Filter aktif':'Nonaktif'}</small></div><button class="btn light" onclick="toggleBlockedWord('${safe(x.id)}',${!x.is_active})">${x.is_active?'Nonaktifkan':'Aktifkan'}</button><button class="btn" style="background:#f8e9e7;color:#a33" onclick="deleteBlockedWord('${safe(x.id)}')">Hapus</button></div>`).join(''));
+  const v=await db.from('adisa_blocked_visitors').select('id,visitor_id,reason,created_at').order('created_at',{ascending:false}).limit(100);
+  if(visitors)visitors.innerHTML=v.error?'Gagal memuat daftar blokir: '+safe(v.error.message):(!v.data?.length?'Belum ada pengunjung yang diblokir.':v.data.map(x=>`<div class="item"><div class="desc"><b>${safe(x.visitor_id)}</b><small>${safe(x.reason||'Diblokir admin')}</small></div><button class="btn light" onclick="unblockMediaVisitor('${safe(x.id)}')">Buka blokir</button></div>`).join(''));
+  const c=await db.from('adisa_media_comments').select('id,target_type,video_id,display_name,body,visitor_id,is_visible,created_at').order('created_at',{ascending:false}).limit(50);
+  comments.innerHTML=c.error?'Gagal memuat komentar: '+safe(c.error.message):(!c.data?.length?'Belum ada komentar.':c.data.map(x=>`<div class="item"><div class="desc"><b>${safe(x.display_name)} · ${x.target_type==='live'?'LIVE':'Video'}</b><small>${safe(x.body)}<br>${new Date(x.created_at).toLocaleString('id-ID')} · ${x.is_visible?'Tampil':'Disaring'}<br>ID pengunjung: ${safe(x.visitor_id)}</small></div>${x.is_visible?`<button class="btn light" onclick="hideMediaComment('${safe(x.id)}')">Sembunyikan</button>`:''}<button class="btn" style="background:#f8e9e7;color:#a33" onclick="blockMediaVisitor('${safe(x.visitor_id)}')">Blokir pengunjung</button></div>`).join(''));
+}
+async function addBlockedWord(){const input=$('blockedWordInput'),word=input.value.trim().toLowerCase();if(!word)return message('moderationMsg','Masukkan kata atau frasa terlebih dahulu.');const {error}=await db.from('adisa_blocked_words').upsert({word,is_active:true},{onConflict:'word'});if(error)return message('moderationMsg','Gagal menyimpan: '+error.message);input.value='';message('moderationMsg','Kata berhasil ditambahkan.',true);await loadModeration()}
+async function toggleBlockedWord(id,active){const {error}=await db.from('adisa_blocked_words').update({is_active:active}).eq('id',id);if(error)return alert(error.message);await loadModeration()}
+async function deleteBlockedWord(id){if(!confirm('Hapus kata ini dari daftar filter?'))return;const {error}=await db.from('adisa_blocked_words').delete().eq('id',id);if(error)return alert(error.message);await loadModeration()}
+async function hideMediaComment(id){const {error}=await db.from('adisa_media_comments').update({is_visible:false}).eq('id',id);if(error)return alert(error.message);await loadModeration()}
+async function blockMediaVisitor(visitorId){if(!visitorId||!confirm('Blokir pengunjung ini agar tidak dapat mengirim komentar lagi dari perangkat/browser ini?'))return;const {error}=await db.from('adisa_blocked_visitors').upsert({visitor_id:visitorId,reason:'Diblokir oleh admin'},{onConflict:'visitor_id'});if(error)return alert(error.message);message('moderationMsg','Pengunjung berhasil diblokir.',true);await loadModeration()}
+async function unblockMediaVisitor(id){if(!confirm('Buka blokir pengunjung ini?'))return;const {error}=await db.from('adisa_blocked_visitors').delete().eq('id',id);if(error)return alert(error.message);await loadModeration()}
 async function changePassword(){let a=$("accountNew").value,b=$("accountConfirm").value;if(a.length<8)return message("accountMsg","Password minimal 8 karakter.");if(a!==b)return message("accountMsg","Konfirmasi password belum sama.");let {error}=await db.auth.updateUser({password:a});if(error)return message("accountMsg",error.message);$("accountNew").value=$("accountConfirm").value="";message("accountMsg","Password berhasil diperbarui.",true)}
 db.auth.onAuthStateChange((event)=>{if(event==="PASSWORD_RECOVERY"){resetMode(true);$("loginScreen").classList.remove("hidden");$("app").classList.add("hidden")}});
 (async()=>{let {data:{session}}=await db.auth.getSession();if(new URLSearchParams(location.search).get("reset")==="1"){resetMode(true);return}if(session){let {data:ok}=await db.rpc("is_admin");if(ok)await openApp();else await db.auth.signOut()}})();
