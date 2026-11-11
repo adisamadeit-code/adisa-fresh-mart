@@ -135,6 +135,22 @@ header{position:relative;padding:13px 16px 12px;background:linear-gradient(115de
 }
 .menu-hamburger{position:absolute;z-index:8;top:10px;right:10px;width:38px;height:38px;border:1px solid #ffffff80;border-radius:50%;background:rgba(18,63,43,.42);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:0;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .menu-hamburger span{display:block;width:17px;height:2px;border-radius:3px;background:#fff;box-shadow:0 1px 2px #0005}
+
+/* ADISA MEDIA COMMENTS & LIKES */
+.media-feedback{margin-top:10px;padding:10px;border:1px solid #e1e7dc;border-radius:13px;background:#fffdf7;color:#203329}
+.media-feedback .feedback-actions{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.media-feedback button{border:1px solid #d8e2d5;border-radius:20px;background:#f7faf4;padding:7px 11px;color:#164b35;font-weight:700}
+.media-feedback button.liked{color:#d94b65;background:#fff0f3;border-color:#f3c4cc}
+.media-feedback .comment-list{max-height:170px;overflow:auto;margin:8px 0;display:grid;gap:7px}
+.media-feedback .comment-item{padding:7px 9px;background:#f4f7ef;border-radius:9px;font-size:12px;overflow-wrap:anywhere}
+.media-feedback .comment-item b{color:#164b35;display:block;margin-bottom:2px}
+.media-feedback .comment-form{display:grid;grid-template-columns:1fr;gap:7px}
+.media-feedback input,.media-feedback textarea{width:100%;border:1px solid #d6dfd2;border-radius:9px;padding:9px;background:#fff;color:#203329}
+.media-feedback textarea{min-height:58px;resize:vertical}
+.media-feedback .send-comment{background:#21643b;color:#fff;border:0}
+.media-feedback .feedback-note{font-size:10px;color:#68776b;margin:4px 0}
+.live-feedback{margin-top:10px}
+
 </style>
 </head>
 <body>
@@ -236,6 +252,15 @@ header{position:relative;padding:13px 16px 12px;background:linear-gradient(115de
         <div id="customerLiveStage" style="width:100%;min-height:190px;background:#10271c;border-radius:13px;overflow:hidden;display:flex;align-items:center;justify-content:center;color:white;text-align:center;padding:12px">Siaran LIVE ADISA akan tampil di sini.</div>
         <button class="primary" id="watchLiveBtn" type="button" style="width:100%;margin-top:10px" onclick="joinAdisaLive()">▶ TONTON LIVE SEKARANG</button>
         <button class="secondary" id="leaveLiveBtn" type="button" style="width:100%;margin-top:8px" onclick="leaveAdisaLive()" hidden>Keluar dari LIVE</button>
+        <div class="media-feedback live-feedback" id="liveFeedback" hidden>
+          <div class="feedback-actions"><button type="button" id="liveLikeBtn" onclick="toggleMediaLike('live',null,'liveLikeBtn','liveLikeCount')">♡ Suka</button><span>❤️ <b id="liveLikeCount">0</b></span></div>
+          <div class="comment-list" id="liveCommentList"><small>Belum ada komentar.</small></div>
+          <form class="comment-form" onsubmit="sendMediaComment(event,'live',null,'liveCommentName','liveCommentText','liveCommentList')">
+            <input id="liveCommentName" maxlength="40" placeholder="Nama Anda" required>
+            <textarea id="liveCommentText" maxlength="500" placeholder="Tulis komentar yang sopan..." required></textarea>
+            <button class="send-comment" type="submit">KIRIM KOMENTAR</button>
+          </form><p class="feedback-note">Tidak perlu membuat akun. Komentar akan disaring otomatis.</p>
+        </div>
       </div>
     </div>
     <div id="videoPanel" hidden><div id="storeVideos" class="video-grid"><p class="note">Video produk akan tampil setelah ditambahkan melalui pengelolaan toko.</p></div></div>
@@ -373,17 +398,51 @@ async function loadStoreBanner(){
 /* =========================================================
    ADISA LIVE INTERNAL + VIDEO PRODUK
    ========================================================= */
-let customerLiveRoom=null,liveStatusTimer=null;
+let customerLiveRoom=null,liveStatusTimer=null,liveFeedbackTimer=null;
 async function loadStoreVideos(){
   try{
-    const {data,error}=await supabaseClient.from('store_videos').select('title,video_url,thumbnail_url,product_name').eq('is_active',true).order('created_at',{ascending:false});
+    const {data,error}=await supabaseClient.from('store_videos').select('id,title,video_url,thumbnail_url,product_name').eq('is_active',true).order('created_at',{ascending:false});
     if(error)throw error;
     if(!data?.length){$('storeVideos').innerHTML='<p class="note" style="grid-column:1/-1">Belum ada video produk. Admin dapat menambahkan video melalui dashboard.</p>';return;}
     $('storeVideos').innerHTML=data.map(v=>{
-      const url=escapeHTML(v.video_url||''),poster=escapeHTML(v.thumbnail_url||''),title=escapeHTML(v.title||v.product_name||'Video Produk');
-      return `<article class="video-card"><video controls playsinline preload="metadata" ${poster?`poster="${poster}"`:''}><source src="${url}">Browser tidak mendukung pemutar video.</video><div class="video-caption">${title}</div></article>`;
+      const id=escapeHTML(String(v.id)),url=escapeHTML(v.video_url||''),poster=escapeHTML(v.thumbnail_url||''),title=escapeHTML(v.title||v.product_name||'Video Produk');
+      return `<article class="video-card"><video controls playsinline preload="metadata" ${poster?`poster="${poster}"`:''}><source src="${url}">Browser tidak mendukung pemutar video.</video><div class="video-caption">${title}</div><div class="media-feedback" data-video-feedback="${id}"><div class="feedback-actions"><button type="button" id="videoLikeBtn-${id}" onclick="toggleMediaLike('video','${id}','videoLikeBtn-${id}','videoLikeCount-${id}')">♡ Suka</button><span>❤️ <b id="videoLikeCount-${id}">0</b></span></div><div class="comment-list" id="videoCommentList-${id}"><small>Memuat komentar...</small></div><form class="comment-form" onsubmit="sendMediaComment(event,'video','${id}','videoCommentName-${id}','videoCommentText-${id}','videoCommentList-${id}')"><input id="videoCommentName-${id}" maxlength="40" placeholder="Nama Anda" required><textarea id="videoCommentText-${id}" maxlength="500" placeholder="Tulis komentar tentang produk ini..." required></textarea><button class="send-comment" type="submit">KIRIM</button></form><p class="feedback-note">Komentar tanpa akun. Gunakan bahasa yang sopan.</p></div></article>`;
     }).join('');
-  }catch(e){$('storeVideos').innerHTML='<p class="note" style="grid-column:1/-1">Video produk belum dapat dimuat. Periksa pengaturan video toko.</p>';}
+    for(const v of data){await loadMediaFeedback('video',String(v.id),'videoCommentList-'+v.id,'videoLikeCount-'+v.id,'videoLikeBtn-'+v.id);}
+  }catch(e){$('storeVideos').innerHTML='<p class="note" style="grid-column:1/-1">Video produk belum dapat dimuat. Periksa pengaturan video toko.</p>';console.error(e);}
+}
+const ADISA_VISITOR_KEY='adisa_media_visitor_v1';
+let adisaVisitorId=localStorage.getItem(ADISA_VISITOR_KEY);
+if(!adisaVisitorId){adisaVisitorId=(crypto.randomUUID?crypto.randomUUID():('v-'+Date.now()+'-'+Math.random().toString(36).slice(2)));localStorage.setItem(ADISA_VISITOR_KEY,adisaVisitorId);}
+function escapeMediaText(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+async function loadMediaFeedback(type,videoId,listId,countId,likeBtnId){
+  const list=$(listId);if(!list)return;
+  let query=supabaseClient.from('adisa_media_comments').select('display_name,body,created_at').eq('target_type',type).eq('is_visible',true).order('created_at',{ascending:false}).limit(30);
+  query=type==='video'?query.eq('video_id',videoId):query.is('video_id',null);
+  const {data,error}=await query;
+  list.innerHTML=error?'<small>Komentar belum dapat dimuat.</small>':(!data?.length?'<small>Belum ada komentar. Jadilah yang pertama berkomentar.</small>':data.reverse().map(c=>`<div class="comment-item"><b>${escapeMediaText(c.display_name)}</b>${escapeMediaText(c.body)}</div>`).join(''));
+  const {count}=await (type==='video'?supabaseClient.from('adisa_media_likes').select('*',{count:'exact',head:true}).eq('target_type','video').eq('video_id',videoId):supabaseClient.from('adisa_media_likes').select('*',{count:'exact',head:true}).eq('target_type','live'));
+  if($(countId))$(countId).textContent=String(count||0);
+  if($(likeBtnId)){const {data:mine}=await supabaseClient.from('adisa_media_likes').select('id').eq('visitor_id',adisaVisitorId).eq('target_type',type).eq(type==='video'?'video_id':'visitor_id',type==='video'?videoId:adisaVisitorId).limit(1);$(likeBtnId).classList.toggle('liked',!!mine?.length);$(likeBtnId).textContent=mine?.length?'♥ Disukai':'♡ Suka';}
+}
+async function sendMediaComment(event,type,videoId,nameId,textId,listId){
+  event.preventDefault();const name=$(nameId).value.trim(),body=$(textId).value.trim();if(!name||!body)return;
+  const btn=event.submitter;if(btn)btn.disabled=true;
+  try{
+    const {data,error}=await supabaseClient.rpc('submit_adisa_media_comment',{p_target_type:type,p_video_id:videoId||null,p_display_name:name,p_body:body,p_visitor_id:adisaVisitorId});
+    if(error)throw error;if(data?.ok===false)throw new Error(data.message||'Komentar tidak dapat dikirim.');
+    $(textId).value='';await loadMediaFeedback(type,videoId,listId,type==='video'?'videoLikeCount-'+videoId:'liveLikeCount',type==='video'?'videoLikeBtn-'+videoId:'liveLikeBtn');
+    if(data?.status==='filtered')alert('Komentar tidak ditampilkan karena terdeteksi mengandung kata yang tidak diperbolehkan.');
+  }catch(e){alert(e.message||'Komentar gagal dikirim. Coba lagi.');}finally{if(btn)btn.disabled=false;}
+}
+async function toggleMediaLike(type,videoId,buttonId,countId){
+  const btn=$(buttonId);if(btn)btn.disabled=true;
+  try{const {data,error}=await supabaseClient.rpc('toggle_adisa_media_like',{p_target_type:type,p_video_id:videoId||null,p_visitor_id:adisaVisitorId});if(error)throw error;if($(countId))$(countId).textContent=String(data?.like_count??0);if(btn){btn.classList.toggle('liked',!!data?.liked);btn.textContent=data?.liked?'♥ Disukai':'♡ Suka';}}
+  catch(e){alert('Tanda suka belum dapat disimpan. Pastikan SQL komentar sudah dijalankan.');}finally{if(btn)btn.disabled=false;}
+}
+async function refreshLiveFeedback(){
+  const box=$('liveFeedback');if(!box)return;
+  await loadMediaFeedback('live',null,'liveCommentList','liveLikeCount','liveLikeBtn');
 }
 async function refreshAdisaLiveStatus(){
   const {data,error}=await supabaseClient.from('live_sessions').select('title,is_live').eq('id',1).maybeSingle();
@@ -403,7 +462,7 @@ async function joinAdisaLive(){
   if(!window.LivekitClient){$('customerLiveStatus').textContent='Pemutar LIVE belum termuat. Periksa koneksi internet.';return;}
   $('watchLiveBtn').disabled=true;$('customerLiveStatus').textContent='Menghubungkan ke siaran ADISA...';
   try{
-    const {data,error}=await supabaseClient.functions.invoke('live-token',{body:{role:'viewer'}});
+    const {data,error}=await supabaseClient.functions.invoke('livekit-token',{body:{role:'viewer'}});
     if(error){
       let detail=error.message||'Permintaan token penonton gagal.';
       try{
@@ -415,7 +474,7 @@ async function joinAdisaLive(){
       throw new Error(detail);
     }
     if(data?.error)throw new Error(data.error);
-    if(!data?.serverUrl || !data?.participantToken)throw new Error('Token penonton tidak lengkap dari Edge Function live-token.');
+    if(!data?.serverUrl || !data?.participantToken)throw new Error('Token penonton tidak lengkap dari Edge Function livekit-token.');
     customerLiveRoom=new LivekitClient.Room({adaptiveStream:true,dynacast:true});
     const stage=$('customerLiveStage');stage.innerHTML='';
     const attachTrack=(track)=>{
@@ -426,17 +485,17 @@ async function joinAdisaLive(){
       if(el.tagName==='VIDEO')el.play().catch(()=>{});
     };
     customerLiveRoom.on(LivekitClient.RoomEvent.TrackSubscribed,(track)=>attachTrack(track));
-    customerLiveRoom.on(LivekitClient.RoomEvent.Disconnected,()=>{stage.textContent='Siaran telah berakhir.';$('leaveLiveBtn').hidden=true;$('watchLiveBtn').hidden=false;customerLiveRoom=null;});
+    customerLiveRoom.on(LivekitClient.RoomEvent.Disconnected,()=>{stage.textContent='Siaran telah berakhir.';$('leaveLiveBtn').hidden=true;$('watchLiveBtn').hidden=false;$('liveFeedback').hidden=true;if(liveFeedbackTimer){clearInterval(liveFeedbackTimer);liveFeedbackTimer=null;}customerLiveRoom=null;});
     await customerLiveRoom.connect(data.serverUrl,data.participantToken);
     customerLiveRoom.remoteParticipants.forEach(participant=>participant.trackPublications.forEach(pub=>{if(pub.track)attachTrack(pub.track)}));
     $('watchLiveBtn').hidden=true;$('leaveLiveBtn').hidden=false;
     $('customerLiveStatus').textContent='Terhubung ke LIVE ADISA FRESH MART.';
-    if(!liveStatusTimer)liveStatusTimer=setInterval(refreshAdisaLiveStatus,15000);
+    if(!liveStatusTimer)liveStatusTimer=setInterval(refreshAdisaLiveStatus,15000);if(!liveFeedbackTimer)liveFeedbackTimer=setInterval(refreshLiveFeedback,7000);
   }catch(e){$('customerLiveStatus').textContent='Belum dapat menonton: '+(e.message||e);$('watchLiveBtn').disabled=false;$('customerLiveStage').textContent='Silakan coba kembali.';}
 }
 async function leaveAdisaLive(){
   if(customerLiveRoom){try{await customerLiveRoom.disconnect()}catch(_){ }customerLiveRoom=null;}
-  $('customerLiveStage').textContent='Kamu telah keluar dari siaran LIVE.';$('leaveLiveBtn').hidden=true;$('watchLiveBtn').hidden=false;
+  $('customerLiveStage').textContent='Kamu telah keluar dari siaran LIVE.';$('leaveLiveBtn').hidden=true;$('watchLiveBtn').hidden=false;$('liveFeedback').hidden=true;if(liveFeedbackTimer){clearInterval(liveFeedbackTimer);liveFeedbackTimer=null;}
   if(liveStatusTimer){clearInterval(liveStatusTimer);liveStatusTimer=null;}
 }
 document.querySelectorAll('[data-media-tab]').forEach(button=>button.addEventListener('click',()=>{
