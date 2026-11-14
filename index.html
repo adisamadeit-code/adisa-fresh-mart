@@ -445,8 +445,9 @@ async function refreshLiveFeedback(){
   await loadMediaFeedback('live',null,'liveCommentList','liveLikeCount','liveLikeBtn');
 }
 async function refreshAdisaLiveStatus(){
-  const {data,error}=await supabaseClient.from('live_sessions').select('title,is_live').eq('id',1).maybeSingle();
+  const {data,error}=await supabaseClient.from('live_sessions').select('title,is_live,room_name').eq('id',1).maybeSingle();
   if(error){$('customerLiveStatus').textContent='Fitur LIVE sedang disiapkan.';$('watchLiveBtn').disabled=true;return false;}
+  if(data?.room_name)customerLiveRoomName=data.room_name;
   if(data?.is_live){
     $('customerLiveHeading').innerHTML='<span class="live-dot"></span> 🔴 '+escapeHTML(data.title||'ADISA SEDANG LIVE');
     $('customerLiveStatus').textContent='ADISA sedang siaran langsung. Tekan tombol di bawah untuk menonton.';
@@ -462,7 +463,7 @@ async function joinAdisaLive(){
   if(!window.LivekitClient){$('customerLiveStatus').textContent='Pemutar LIVE belum termuat. Periksa koneksi internet.';return;}
   $('watchLiveBtn').disabled=true;$('customerLiveStatus').textContent='Menghubungkan ke siaran ADISA...';
   try{
-    const {data,error}=await supabaseClient.functions.invoke('livekit-token',{body:{role:'viewer'}});
+    const {data,error}=await supabaseClient.functions.invoke('livekit-token',{body:{role:'viewer',roomName:customerLiveRoomName}});
     if(error){
       let detail=error.message||'Permintaan token penonton gagal.';
       try{
@@ -477,15 +478,23 @@ async function joinAdisaLive(){
     if(!data?.serverUrl || !data?.participantToken)throw new Error('Token penonton tidak lengkap dari Edge Function livekit-token.');
     customerLiveRoom=new LivekitClient.Room({adaptiveStream:true,dynacast:true});
     const stage=$('customerLiveStage');stage.innerHTML='';
+    stage.style.display='flex';stage.style.flexDirection='column';stage.style.gap='8px';
+    const attachedTracks=new Set();
     const attachTrack=(track)=>{
+      if(!track||attachedTracks.has(track))return;
+      attachedTracks.add(track);
       const el=track.attach();
-      el.autoplay=true;el.playsInline=true;el.style.display='block';
-      el.style.width='100%';el.style.height='auto';el.style.maxHeight='65vh';
-      el.style.objectFit='contain';stage.appendChild(el);
-      if(el.tagName==='VIDEO')el.play().catch(()=>{});
+      el.autoplay=true;el.playsInline=true;el.setAttribute('playsinline','');
+      el.style.display='block';el.style.width='100%';el.style.maxWidth='100%';
+      el.style.height='auto';el.style.maxHeight='65vh';el.style.objectFit='contain';
+      if(el.tagName==='VIDEO'){el.muted=true;el.controls=false;el.play().catch(()=>{ $('customerLiveStatus').textContent='LIVE terhubung. Jika video belum bergerak, sentuh area video untuk memutar.'; });}
+      stage.appendChild(el);
     };
     customerLiveRoom.on(LivekitClient.RoomEvent.TrackSubscribed,(track)=>attachTrack(track));
-    customerLiveRoom.on(LivekitClient.RoomEvent.Disconnected,()=>{stage.textContent='Siaran telah berakhir.';$('leaveLiveBtn').hidden=true;$('watchLiveBtn').hidden=false;$('liveFeedback').hidden=true;if(liveFeedbackTimer){clearInterval(liveFeedbackTimer);liveFeedbackTimer=null;}customerLiveRoom=null;});
+    customerLiveRoom.on(LivekitClient.RoomEvent.TrackUnsubscribed,(track)=>{
+      try{track.detach().forEach(el=>el.remove());}catch(_){}attachedTracks.delete(track);
+    });
+    customerLiveRoom.on(LivekitClient.RoomEvent.Disconnected,()=>{stage.textContent='Siaran telah berakhir.';$('leaveLiveBtn').hidden=true;$('watchLiveBtn').hidden=false;$('watchLiveBtn').disabled=false;$('liveFeedback').hidden=true;if(liveFeedbackTimer){clearInterval(liveFeedbackTimer);liveFeedbackTimer=null;}customerLiveRoom=null;});
     await customerLiveRoom.connect(data.serverUrl,data.participantToken);
     customerLiveRoom.remoteParticipants.forEach(participant=>participant.trackPublications.forEach(pub=>{if(pub.track)attachTrack(pub.track)}));
     $('watchLiveBtn').hidden=true;$('leaveLiveBtn').hidden=false;
