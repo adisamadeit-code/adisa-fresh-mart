@@ -54,6 +54,8 @@ header{background:var(--g);color:white;padding:15px;display:flex;justify-content
 <div class="panel"><h2>🔴 ADISA LIVE — Siaran dari Website Sendiri</h2>
 <p class="hint">Gunakan kamera dan mikrofon HP ini. Pelanggan akan menonton langsung dari halaman ADISA FRESH MART, tanpa berpindah ke TikTok atau aplikasi lain.</p>
 <div class="field"><label>Judul Siaran LIVE</label><input id="liveTitle" maxlength="100" value="LIVE ADISA FRESH MART" placeholder="Contoh: Promo Jamu dan Frozen Food"></div>
+<div class="actions"><button class="btn light" id="saveLiveTitleBtn" type="button" onclick="saveLiveTitle()">💾 SIMPAN JUDUL LIVE</button></div>
+<p class="hint">Judul dapat diperbarui saat LIVE berlangsung. Tekan SIMPAN JUDUL LIVE agar perubahan tersimpan dan tampil di halaman pelanggan.</p>
 <div><span id="adminLiveStatus" class="status-pill">● Belum LIVE</span></div>
 <video id="adminLivePreview" class="live-preview" autoplay muted playsinline></video>
 <div class="actions"><button class="btn primary" id="startLiveBtn" type="button" onclick="startAdisaLive()">🔴 MULAI LIVE</button><button class="btn light" id="endLiveBtn" type="button" onclick="endAdisaLive()" disabled>■ AKHIRI LIVE</button></div>
@@ -157,6 +159,24 @@ async function loadAdminLiveStatus(){
   $('adminLiveStatus').classList.toggle('on',!!data?.is_live);
   $('startLiveBtn').disabled=!!data?.is_live;$('endLiveBtn').disabled=!data?.is_live;
   if(data?.is_live)message('liveMsg','Status LIVE tersimpan aktif. Jika halaman admin sempat dimuat ulang, akhiri status lama lalu mulai siaran baru.');
+}
+async function saveLiveTitle(){
+  const title=$('liveTitle').value.trim();
+  if(!title)return message('liveMsg','Judul LIVE tidak boleh kosong.');
+  const btn=$('saveLiveTitleBtn');
+  btn.disabled=true;
+  message('liveMsg','Menyimpan judul LIVE...',true);
+  try{
+    const {error}=await db.from('live_sessions')
+      .update({title,updated_at:new Date().toISOString()})
+      .eq('id',1);
+    if(error)throw error;
+    message('liveMsg','Judul LIVE berhasil disimpan. Halaman pelanggan akan memperbarui judul secara otomatis.',true);
+  }catch(e){
+    message('liveMsg','Gagal menyimpan judul LIVE: '+(e.message||e));
+  }finally{
+    btn.disabled=false;
+  }
 }
 async function startAdisaLive(){
   if(!window.LivekitClient)return message('liveMsg','Komponen LIVE belum termuat. Periksa koneksi internet lalu muat ulang.');
