@@ -501,8 +501,7 @@ async function joinAdisaLive(){
     $('customerLiveStatus').textContent='Terhubung ke LIVE ADISA FRESH MART.';
     // Tampilkan area suka dan komentar setelah pelanggan berhasil masuk LIVE.
     $('liveFeedback').hidden=false;
-    // Muat komentar secara terpisah agar kegagalan tabel/komentar tidak memutus LIVE.
-    refreshLiveFeedback().catch(error=>console.warn('Komentar LIVE belum dapat dimuat:',error));
+    await refreshLiveFeedback();
     if(!liveStatusTimer)liveStatusTimer=setInterval(refreshAdisaLiveStatus,15000);
     if(!liveFeedbackTimer)liveFeedbackTimer=setInterval(refreshLiveFeedback,7000);
   }catch(e){$('customerLiveStatus').textContent='Belum dapat menonton: '+(e.message||e);$('watchLiveBtn').disabled=false;$('customerLiveStage').textContent='Silakan coba kembali.';}
