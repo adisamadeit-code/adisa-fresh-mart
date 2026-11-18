@@ -449,7 +449,9 @@ async function refreshAdisaLiveStatus(){
   if(error){$('customerLiveStatus').textContent='Fitur LIVE sedang disiapkan.';$('watchLiveBtn').disabled=true;return false;}
   if(data?.room_name)customerLiveRoomName=data.room_name;
   if(data?.is_live){
-    $('customerLiveHeading').innerHTML='<span class="live-dot"></span> 🔴 '+escapeHTML(data.title||'ADISA SEDANG LIVE');
+    // Tampilkan judul database apa adanya; jangan menambahkan awalan/akhiran merek
+    // yang dapat membuat tulisan tampak berulang.
+    $('customerLiveHeading').innerHTML='<span class="live-dot"></span> '+escapeHTML(data.title||'ADISA SEDANG LIVE');
     $('customerLiveStatus').textContent='ADISA sedang siaran langsung. Tekan tombol di bawah untuk menonton.';
     $('watchLiveBtn').disabled=false;return true;
   }
@@ -561,9 +563,21 @@ async function loadProducts(){
     $('resultCount').textContent='';
   }
 }
+function isProductPromoActive(product){
+  const promo=Number(product.harga_promo||0);
+  if(!promo || promo<=0 || promo>=Number(product.harga||0)) return false;
+  const today=new Date();
+  const localToday=new Date(today.getFullYear(),today.getMonth(),today.getDate());
+  const start=product.promo_mulai?new Date(String(product.promo_mulai).slice(0,10)+'T00:00:00'):null;
+  const end=product.promo_selesai?new Date(String(product.promo_selesai).slice(0,10)+'T23:59:59'):null;
+  return (!start || localToday>=start) && (!end || localToday<=end);
+}
+function productDisplayPrice(product){
+  return isProductPromoActive(product)?Number(product.harga_promo):Number(product.harga||0);
+}
 function productMatchesQuickMode(product){
   if(quickMode==='promo'){
-    return Boolean(product.label_promo) ||
+    return isProductPromoActive(product) || Boolean(product.label_promo) ||
       String(product.deskripsi||'').toLowerCase().includes('promo');
   }
   if(quickMode==='bundle'){
@@ -607,11 +621,17 @@ function renderProducts(){
     return;
   }
   $('products').innerHTML=filtered.map(product=>{
-    const image=product.gambar
-      ? `<img src="${escapeHTML(product.gambar)}" alt="${escapeHTML(product.nama)}" loading="lazy">`
+    const gallery=Array.isArray(product.foto_galeri)?product.foto_galeri.filter(Boolean):[];
+    const primaryImage=product.gambar || gallery[0] || '';
+    const image=primaryImage
+      ? `<img src="${escapeHTML(primaryImage)}" alt="${escapeHTML(product.nama)}" loading="lazy">`
       : '';
-    const badge=product.label_promo || (product.jenis_penjualan==='preorder'?'Pesan Dahulu':'');
+    const promoActive=isProductPromoActive(product);
+    const badge=promoActive?'PROMO':(product.label_promo || (product.jenis_penjualan==='preorder'?'Pesan Dahulu':''));
     const unit=product.satuan?`<span class="unit"> / ${escapeHTML(product.satuan)}</span>`:'';
+    const priceMarkup=promoActive
+      ? `<span class="old-price" style="text-decoration:line-through;opacity:.65;font-size:.82em;margin-right:6px">${rupiah(product.harga)}</span><strong>${rupiah(product.harga_promo)}</strong>${unit}`
+      : `${rupiah(product.harga)}${unit}`;
     const liked=likedProducts.has(String(product.id));
     return `<article class="card" id="produk-${Number(product.id)}">
       <div class="photo" data-product-photo="${Number(product.id)}">
@@ -625,7 +645,7 @@ function renderProducts(){
       </div>
       <div class="cardbody">
         <p class="pname">${escapeHTML(product.nama||'Produk')}</p>
-        <p class="price">${rupiah(product.harga)}${unit}</p>
+        <p class="price">${priceMarkup}</p>
         <button class="addbtn" type="button" data-add="${Number(product.id)}">🛒 Tambah</button>
       </div>
     </article>`;
@@ -687,7 +707,7 @@ function addToCart(id){
   const existing=cart.find(item=>Number(item.id)===id);
   if(existing) existing.qty++;
   else cart.push({
-    id:product.id,name:product.nama,price:Number(product.harga||0),
+    id:product.id,name:product.nama,price:productDisplayPrice(product),
     unit:product.satuan||'',qty:1
   });
   updateCart();
@@ -761,7 +781,12 @@ function sendWhatsAppOrder(){
    ========================================================= */
 function openOverlay(id){
   $(id).classList.add('show');
-  if(id==='liveOverlay')refreshAdisaLiveStatus();
+  if(id==='liveOverlay'){
+    refreshAdisaLiveStatus();
+    // Polling ringan membuat judul terbaru terlihat meskipun pelanggan
+    // sedang membuka panel LIVE tetapi belum menekan tombol menonton.
+    if(!liveStatusTimer)liveStatusTimer=setInterval(refreshAdisaLiveStatus,5000);
+  }
   document.body.style.overflow='hidden';
 }
 function closeOverlay(id){
