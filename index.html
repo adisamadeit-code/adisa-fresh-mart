@@ -499,7 +499,11 @@ async function joinAdisaLive(){
     customerLiveRoom.remoteParticipants.forEach(participant=>participant.trackPublications.forEach(pub=>{if(pub.track)attachTrack(pub.track)}));
     $('watchLiveBtn').hidden=true;$('leaveLiveBtn').hidden=false;
     $('customerLiveStatus').textContent='Terhubung ke LIVE ADISA FRESH MART.';
-    if(!liveStatusTimer)liveStatusTimer=setInterval(refreshAdisaLiveStatus,15000);if(!liveFeedbackTimer)liveFeedbackTimer=setInterval(refreshLiveFeedback,7000);
+    // Tampilkan area suka dan komentar setelah pelanggan berhasil masuk LIVE.
+    $('liveFeedback').hidden=false;
+    await refreshLiveFeedback();
+    if(!liveStatusTimer)liveStatusTimer=setInterval(refreshAdisaLiveStatus,15000);
+    if(!liveFeedbackTimer)liveFeedbackTimer=setInterval(refreshLiveFeedback,7000);
   }catch(e){$('customerLiveStatus').textContent='Belum dapat menonton: '+(e.message||e);$('watchLiveBtn').disabled=false;$('customerLiveStage').textContent='Silakan coba kembali.';}
 }
 async function leaveAdisaLive(){
