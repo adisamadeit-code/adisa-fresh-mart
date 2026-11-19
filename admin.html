@@ -30,13 +30,13 @@ header{background:var(--g);color:white;padding:15px;display:flex;justify-content
 <div class="field"><label>Harga Promo (Rp)</label><input id="hargaPromo" type="number" min="0" placeholder="Kosongkan jika tidak promo"></div><div class="field"><label>Promo Mulai</label><input id="promoMulai" type="date"></div><div class="field"><label>Promo Berakhir</label><input id="promoSelesai" type="date"></div>
 <div class="field"><label>Satuan Produk</label><select id="satuan" onchange="toggleCustomUnit()">
 <option value="Botol">Botol</option><option value="Bungkus">Bungkus</option><option value="Kotak">Kotak</option><option value="Pcs">Pcs</option><option value="Buah">Buah</option><option value="Butir">Butir</option><option value="Ikat">Ikat</option><option value="Sisir">Sisir</option><option value="Lembar">Lembar</option><option value="Set">Set</option><option value="Porsi">Porsi</option><option value="Lusin">Lusin</option><option value="Renceng">Renceng</option><option value="Pack">Pack</option><option value="Sachet">Sachet</option><option value="Cup">Cup</option><option value="Gelas">Gelas</option><option value="Kaleng">Kaleng</option><option value="Karton">Karton</option><option value="Sak">Sak</option><option value="100 gram">100 gram</option><option value="200 gram">200 gram</option><option value="250 gram">250 gram</option><option value="500 gram">500 gram</option><option value="1/4 kg">1/4 kg</option><option value="1/2 kg">1/2 kg</option><option value="1 kg">1 kg</option><option value="2 kg">2 kg</option><option value="5 kg">5 kg</option><option value="Kg">Kg (isi sendiri)</option><option value="Gram">Gram (isi sendiri)</option><option value="Liter">Liter</option><option value="1/2 liter">1/2 liter</option><option value="250 ml">250 ml</option><option value="100 ml">100 ml</option><option value="Ml">Ml (isi sendiri)</option><option value="Meter">Meter</option><option value="Roll">Roll</option><option value="Lainnya">Lainnya (ketik sendiri)</option>
-</select><input id="satuanCustom" class="hidden" style="margin-top:8px" placeholder="Ketik satuan produk"></div><div class="field"><label>Berat (gram)</label><input id="berat" type="number" min="0"></div>
+</select><input id="satuanCustom" class="hidden" style="margin-top:8px" placeholder="Ketik satuan produk"></div><div class="field"><label>Isi / Berat / Volume</label><div class="actions" style="gap:8px;flex-wrap:nowrap"><input id="berat" type="number" min="0" step="any" inputmode="decimal" placeholder="Masukkan angka" style="flex:1;min-width:0"><select id="satuanBerat" aria-label="Satuan isi, berat, atau volume" style="width:112px;flex:0 0 112px"><option value="gram">Gram</option><option value="kg">Kilogram (kg)</option><option value="ml">Mililiter (ml)</option><option value="liter">Liter</option></select></div><small style="display:block;color:#7b847d;margin-top:5px">Isi angka di kotak kiri, lalu pilih satuannya di sebelah kanan.</small></div>
 <div class="field"><label>Jenis Penjualan</label><select id="jenis"><option value="ready">Ready Stock</option><option value="preorder">Pre-Order</option><option value="both">Ready & Pre-Order</option></select></div><div class="field"><label>Status</label><select id="status"><option value="aktif">Aktif</option><option value="nonaktif">Nonaktif</option></select></div>
 <div class="field"><label>Kelola Stok</label><select id="kelola" onchange="toggleStock()"><option value="true">Ya</option><option value="false">Tidak</option></select></div><div class="field"><label>Jumlah Stok</label><input id="stok" type="number" min="0" value="0"></div>
 <div class="field"><label>Tampilkan Ketersediaan</label><select id="tersedia"><option value="true">Ya</option><option value="false">Tidak</option></select></div><div class="field"><label>Estimasi Pengerjaan</label><input id="estimasi" placeholder="Contoh: 1 hari"></div>
 <div class="field full"><label>Deskripsi</label><textarea id="deskripsi" rows="2"></textarea></div><div class="field"><label>Bahan</label><textarea id="bahan" rows="2"></textarea></div><div class="field"><label>Isi Produk</label><textarea id="isi" rows="2"></textarea></div>
 <div class="field"><label>Manfaat / Keterangan</label><textarea id="manfaat" rows="2"></textarea></div><div class="field"><label>Waktu Konsumsi</label><input id="waktu"></div><div class="field"><label>Cara Penyajian</label><textarea id="penyajian" rows="2"></textarea></div><div class="field"><label>Penyimpanan</label><textarea id="penyimpanan" rows="2"></textarea></div><div class="field"><label>Perhatian</label><textarea id="perhatian" rows="2"></textarea></div>
-<div class="field full"><label>Foto Produk (bisa pilih beberapa foto)</label><input id="foto" type="file" accept="image/*" multiple><input id="photoReplaceInput" type="file" accept="image/*" hidden><div id="photoPreviews" class="photo-manager"></div><small style="display:block;color:#7b847d;margin-top:6px">Pilih beberapa foto. Gunakan tombol Ganti, Jadikan Utama, atau Hapus pada setiap foto. Foto pertama menjadi foto utama.</small></div></div>
+<div class="field full"><label>Foto Produk (bisa pilih beberapa foto)</label><input id="foto" type="file" accept="image/*" multiple><input id="photoReplaceInput" type="file" accept="image/*" hidden><div id="photoPreviews" class="photo-manager"></div><small style="display:block;color:#7b847d;margin-top:6px">Jika salah memilih foto, tekan <b>Ganti Foto</b> tepat di bawah foto yang ingin diganti. Kolom nama, harga, deskripsi, dan isian lain tidak akan dikosongkan. Gunakan Jadikan Utama atau Hapus Foto bila diperlukan.</small></div></div>
 <div class="actions"><button class="btn primary">Simpan Produk</button><button class="btn light" type="button" onclick="resetForm()">Kosongkan Form</button></div><div class="msg" id="productMsg"></div></form></div>
 <div class="panel"><h2>Daftar Produk</h2><div class="list" id="productList">Memuat produk...</div></div></section>
 <section id="categories" class="hidden">
@@ -141,7 +141,7 @@ function renderPhotoItems(){
     }
     const replace=document.createElement("button");
     replace.type="button";replace.textContent="Ganti Foto";
-    replace.onclick=()=>{photoReplaceIndex=index;$("photoReplaceInput").click();};
+    replace.onclick=()=>{photoReplaceIndex=index;$("photoReplaceInput").value="";$("photoReplaceInput").click();};
     tile.appendChild(replace);
     const remove=document.createElement("button");
     remove.type="button";remove.className="remove-photo";remove.textContent="Hapus Foto";
@@ -156,6 +156,7 @@ function setPrimaryPhoto(index){
 function removePhoto(index){
   if(index<0||index>=photoItems.length)return;
   photoItems.splice(index,1);renderPhotoItems();
+  message("productMsg","Foto dihapus dari daftar. Isian produk lainnya tetap aman; tekan Simpan Produk untuk menyimpan perubahan.",true);
 }
 function resetForm(){
   $("productForm").reset();$("pid").value="";$("satuan").value="Botol";$("satuanCustom").value="";
@@ -164,13 +165,15 @@ function resetForm(){
   renderPhotoItems();$("formTitle").textContent="Tambah Produk";toggleStock();
 }
 $("foto").addEventListener("change",()=>{
-  [...$("foto").files].forEach(file=>photoItems.push({file,url:""}));
+  const selected=[...$("foto").files];
+  selected.forEach(file=>photoItems.push({file,url:""}));
   $("foto").value="";renderPhotoItems();
+  if(selected.length)message("productMsg",selected.length+" foto ditambahkan. Isian produk lainnya tetap tersimpan di formulir. Tekan Simpan Produk jika sudah selesai.",true);
 });
 $("photoReplaceInput").addEventListener("change",()=>{
   const file=$("photoReplaceInput").files?.[0];
   if(file&&photoReplaceIndex>=0&&photoItems[photoReplaceIndex]){
-    photoItems[photoReplaceIndex]={file,url:""};renderPhotoItems();
+    photoItems[photoReplaceIndex]={file,url:""};renderPhotoItems();message("productMsg","Foto pada kotak ini sudah diganti. Isian produk lainnya tetap aman; tekan Simpan Produk untuk menyimpan perubahan.",true);
   }
   $("photoReplaceInput").value="";photoReplaceIndex=-1;
 });
@@ -185,7 +188,7 @@ function editProduct(id){
   let p=products.find(x=>String(x.id)===String(id));if(!p)return;
   let map={nama:"nama",sku:"kode_produk",kategori:"kategori",harga:"harga",satuan:"satuan",berat:"berat",jenis:"jenis_penjualan",status:"status_produk",kelola:"kelola_stok",stok:"stok",tersedia:"tersedia",estimasi:"estimasi_pengerjaan",deskripsi:"deskripsi",bahan:"bahan",isi:"isi_produk",manfaat:"manfaat",waktu:"waktu_konsumsi",penyajian:"cara_penyajian",penyimpanan:"penyimpanan",perhatian:"perhatian"};
   for(let [field,key] of Object.entries(map)){if(field!=="satuan"&&field!=="kategori")$(field).value=p[key]??"";}
-  setUnit(p.satuan||"Botol");setCategory(p.kategori||"");
+  setUnit(p.satuan||"Botol");setCategory(p.kategori||"");$("satuanBerat").value=p.satuan_berat||"gram";
   $("hargaPromo").value=p.harga_promo??"";$("promoMulai").value=p.promo_mulai??"";$("promoSelesai").value=p.promo_selesai??"";
   $("pid").value=p.id;photoUrl=p.gambar||"";photoGallery=Array.isArray(p.foto_galeri)?p.foto_galeri.slice():[];
   photoItems=[...new Set([photoUrl,...photoGallery].filter(Boolean))].map(url=>({url,file:null}));
@@ -242,7 +245,7 @@ $("productForm").addEventListener("submit",async e=>{
     let row={
       nama:$("nama").value.trim(),kode_produk:skuValue,kategori:getCategory(),harga:+$("harga").value,
       harga_promo:promo,promo_mulai:promoStart,promo_selesai:promoEnd,foto_galeri:photoGallery,
-      satuan:getUnit()||"pcs",berat:+$("berat").value||0,jenis_penjualan:$("jenis").value,
+      satuan:getUnit()||"pcs",berat:+$("berat").value||0,satuan_berat:$("satuanBerat").value||"gram",jenis_penjualan:$("jenis").value,
       status_produk:$("status").value,kelola_stok:$("kelola").value==="true",stok:+$("stok").value||0,
       tersedia:$("tersedia").value==="true",estimasi_pengerjaan:$("estimasi").value.trim(),
       deskripsi:$("deskripsi").value.trim(),bahan:$("bahan").value.trim(),isi_produk:$("isi").value.trim(),
